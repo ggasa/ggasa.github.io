@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#04060c" />
+  <title>Dan Kim — AI / ML · Neural & Biosignal Data</title>
+  <meta name="description" content="Dan Kim — Georgia Tech MS Robotics (AI). A journey through six neurons: EEG decoding, LLM agents, vision, biomarkers, robotics, HCI. Connect them all and they become me." />
+  <meta property="og:title" content="Dan Kim — a neural network of projects" />
+  <meta property="og:description" content="Scroll through six neurons. Watch them converge into a person." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preload" href="assets/dan.png" as="image" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="importmap">
+  { "imports": { "three": "./vendor/three.module.js" } }
+  </script>
+</head>
+<body>
+
+  <!-- The world -->
+  <canvas id="scene" aria-hidden="true"></canvas>
+
+  <!-- Scroll track: its height IS the length of the journey -->
+  <div id="track" aria-hidden="true"></div>
+
+  <!-- Loader -->
+  <div id="loader" role="status" aria-live="polite">
+    <div class="loader-trace" aria-hidden="true">
+      <svg viewBox="0 0 240 40" preserveAspectRatio="none">
+        <polyline points="0,20 30,20 40,20 46,8 52,32 58,14 64,26 70,20 110,20 118,20 124,6 130,34 136,20 240,20" />
+      </svg>
+    </div>
+    <p class="loader-label">calibrating&nbsp;signal…</p>
+  </div>
+
+  <!-- ============ fixed UI overlays ============ -->
+
+  <header class="nav" id="nav">
+    <a class="nav-mark" href="#" id="home-link" aria-label="Restart journey">
+      <span class="mark-dot"></span>DK
+    </a>
+    <div class="nav-right">
+      <a href="assets/Dan_Kim_Resume.pdf" target="_blank" rel="noopener" class="nav-cta">Résumé ↗</a>
+    </div>
+  </header>
+
+  <!-- Chapter rail (right side) -->
+  <nav class="rail" id="rail" aria-label="Chapters"></nav>
+
+  <!-- Intro overlay -->
+  <div class="ov ov-intro on" id="ov-intro">
+    <p class="eyebrow"><span class="pulse-dot"></span>AI · ML · NEURAL &amp; BIOSIGNAL DATA</p>
+    <h1>Dan Kim</h1>
+    <p class="intro-line">Every project I've built, coiled into one strand.<br /><strong>Scroll through, and it becomes me.</strong></p>
+    <div class="scroll-cue" aria-hidden="true"><span></span><em>scroll</em></div>
+  </div>
+
+  <!-- Project card overlay (content swapped per chapter) -->
+  <aside class="ov ov-card" id="ov-card" aria-live="polite">
+    <p class="card-node"><b id="card-dot"></b><span id="card-num">01</span> / 06 <em id="card-motif"></em></p>
+    <p class="card-kicker" id="card-kicker"></p>
+    <h2 id="card-title"></h2>
+    <p class="card-blurb" id="card-blurb"></p>
+    <div class="card-tags" id="card-tags"></div>
+    <div class="card-foot">
+      <span id="card-period"></span>
+      <a id="card-link" href="#" target="_blank" rel="noopener">Open project ↗</a>
+    </div>
+  </aside>
+
+  <!-- Convergence overlay (face) -->
+  <div class="ov ov-converge" id="ov-converge">
+    <h2>Everything I've built —<br /><span>and everything it built in me.</span></h2>
+  </div>
+
+  <!-- Contact overlay -->
+  <div class="ov ov-contact" id="ov-contact">
+    <p class="section-index">SIGNAL OUT</p>
+    <h2>Dan Kim</h2>
+    <p class="contact-lede">
+      MS Robotics (AI) @ Georgia Tech · Atlanta.<br />
+      Looking for <strong>AI / ML / data roles</strong> — especially biosignals,
+      time-series, and agents.
+    </p>
+    <div class="contact-links" id="contact-links"></div>
+    <p class="colophon">Hand-built with Three.js — the face is <span id="pt-count">—</span> living points.</p>
+  </div>
+
+  <!-- Hub hotspots (clickable neuron markers) -->
+  <div id="hotspots" aria-hidden="false"></div>
+
+  <!-- Static fallback (no WebGL / no JS) -->
+  <section id="fallback" hidden>
+    <h1>Dan Kim — AI / ML · Neural &amp; Biosignal Data</h1>
+    <p>Georgia Tech MS Robotics (AI). EEG decoding, LLM agents, computer vision, interpretable biomarkers, robotics, HCI.</p>
+    <ul id="fallback-list"></ul>
+    <p><a href="assets/Dan_Kim_Resume.pdf">Résumé (PDF)</a> · <a href="https://www.linkedin.com/in/dongyeunkim/">LinkedIn</a> · <a href="https://github.com/ggasa/">GitHub</a></p>
+  </section>
+
+  <script type="module" src="js/main.js?v=12"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+# Local Claude Code / dev tooling — keep out of the public deploy repo
+.claude/
+
+# OS / editor cruft — nothing app-related to ignore (static site, no build)
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.vscode/
+.idea/
