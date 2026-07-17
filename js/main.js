@@ -1,7 +1,7 @@
 // main.js — orchestration for the journey.
 // Scroll position → progress → scene. Scene frames → overlay states.
-import { PROFILE, PROJECTS } from "../data/projects.js?v=12";
-import { createExperience } from "./scene.js?v=12";
+import { PROFILE, PROJECTS } from "../data/projects.js?v=13";
+import { createExperience } from "./scene.js?v=13";
 
 const $ = (s, r = document) => r.querySelector(s);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -111,8 +111,69 @@ function onScroll() {
     ticking = false;
   });
 }
-window.addEventListener("scroll", onScroll, { passive: true });
+
+// ---------- scroll snapping: settle on the nearest chapter, never mid-flight ----------
+// Snap targets ARE the chapter dwell positions (the same landings the rail uses),
+// so when the user stops scrolling we glide to the closest one instead of leaving
+// them stranded between neurons. Active scrolling stays completely free.
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let snapTimer = 0, releaseTimer = 0, programmatic = false;
+
+function chapterScrollTop(ch) {
+  const w = api.weights;
+  const total = w.reduce((a, b) => a + b, 0);
+  let acc = 0;
+  for (let i = 0; i < ch; i++) acc += w[i];
+  // land inside the chapter's dwell (camera parked, card + glyph matched);
+  // "Me" lands late so the face is formed, contact mid-chapter
+  const frac = ch === 0 ? 0.02 : ch <= NP ? 0.18 : ch === NP + 1 ? 0.85 : 0.5;
+  const p = (acc + (w[ch] || 1) * frac) / total;
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  return p * max;
+}
+
+function snapLock() {                     // ignore snap-triggering scrolls we cause ourselves
+  programmatic = true;
+  clearTimeout(releaseTimer);
+  releaseTimer = setTimeout(() => { programmatic = false; }, 850);
+}
+
+function snapToNearest() {
+  if (!api || programmatic) return;
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  if (max <= 0) return;
+  const y = window.scrollY;
+  let best = 0, bestD = Infinity;
+  for (let ch = 0; ch < api.chapters; ch++) {
+    const d = Math.abs(chapterScrollTop(ch) - y);
+    if (d < bestD) { bestD = d; best = ch; }
+  }
+  if (bestD < 3) return;                  // already settled
+  snapLock();
+  window.scrollTo({ top: chapterScrollTop(best), behavior: reduceMotion ? "auto" : "smooth" });
+}
+
+function scheduleSnap() {
+  if (programmatic) return;
+  clearTimeout(snapTimer);
+  snapTimer = setTimeout(snapToNearest, 220);   // fire once scrolling has stopped
+}
+
+window.addEventListener("scroll", () => {
+  onScroll();
+  if (!reduceMotion) scheduleSnap();
+}, { passive: true });
 window.addEventListener("resize", onScroll);
+
+// genuine user input aborts an in-flight snap so the user always keeps control
+if (!reduceMotion) {
+  const release = () => { programmatic = false; clearTimeout(releaseTimer); };
+  window.addEventListener("wheel", release, { passive: true });
+  window.addEventListener("touchmove", release, { passive: true });
+  window.addEventListener("keydown", (e) => {
+    if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " ", "Spacebar"].includes(e.key)) release();
+  });
+}
 
 // ---------- frame → overlay states ----------
 const NP = PROJECTS.length; // 6
@@ -149,19 +210,8 @@ function handleFrame({ c, morph, chapter, localT }) {
 // ---------- rail + home navigation ----------
 function scrollToChapter(ch) {
   if (!api) return;
-  const w = api.weights;
-  const total = w.reduce((a, b) => a + b, 0);
-  let acc = 0;
-  for (let i = 0; i < ch; i++) acc += w[i];
-  // land inside the chapter's DWELL (camera parked, card + glyph matched);
-  // "Me" lands late so the face is already formed, contact mid-chapter
-  const frac =
-    ch === 0 ? 0.02 :
-    ch <= NP ? 0.18 :
-    ch === NP + 1 ? 0.85 : 0.5;
-  const p = (acc + (w[ch] || 1) * frac) / total;
-  const max = document.documentElement.scrollHeight - window.innerHeight;
-  window.scrollTo({ top: p * max, behavior: "smooth" });
+  snapLock();                             // our own scroll — don't let snap fight it
+  window.scrollTo({ top: chapterScrollTop(ch), behavior: reduceMotion ? "auto" : "smooth" });
 }
 rail.addEventListener("click", (e) => {
   const b = e.target.closest("button");
@@ -169,7 +219,8 @@ rail.addEventListener("click", (e) => {
 });
 $("#home-link").addEventListener("click", (e) => {
   e.preventDefault();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  snapLock();
+  window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
 });
 
 // ---------- hub hover focus ----------
