@@ -61,7 +61,7 @@ export const PROJECTS = [
     kicker: "Computer Vision • Deep Learning",
     period: "Jan – May 2025",
     blurb:
-      "CNNs for large-scale scene recognition (~70% top-1) and ResNet-backed semantic " +
+      "CNNs for large-scale scene recognition (~70%) and ResNet-backed semantic " +
       "segmentation for pixel-level labeling. Built and trained end-to-end in PyTorch.",
     tags: ["PyTorch", "ResNet", "CNN", "Segmentation"],
     link: "projects/vision.html",
