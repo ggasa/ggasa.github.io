@@ -1,8 +1,11 @@
 // scene.js — a scroll-driven journey through a neural network.
 //
-// The whole site is one 3D world. Six project-neurons sit along a corridor in
-// depth; scroll flies the camera neuron to neuron (damped scrub). At the end,
-// every particle flies out of the depth and converges into Dan's face.
+// The whole site is one 3D world. One project-neuron per entry in
+// data/projects.js sits along a corridor in depth; scroll flies the camera
+// neuron to neuron (damped scrub). At the end, every particle flies out of
+// the depth and converges into Dan's face. Hub count (NH) is however many
+// projects there are — see HUB_MODE/HUB_POL for how each keeps its own
+// signature glyph/polarity independent of array position.
 //
 // All heavy motion lives in the vertex shader driven by a handful of uniforms
 // (uChapter reveals neurons, uMorph converges the face, uPointer repels
@@ -14,23 +17,23 @@ import {
   Points, LineSegments, AdditiveBlending, Color, Vector2, Vector3, MathUtils,
 } from "three";
 
-import { sampleFacePoints } from "./portrait.js?v=13";
+import { sampleFacePoints } from "./portrait.js?v=16";
 
 // ---- world layout ------------------------------------------------------
-// Hub (soma) world positions — a winding corridor into depth.
+// Hub (soma) world positions — a winding corridor into depth. One entry per
+// project in data/projects.js (index-aligned) — resize both together.
 const HUBS = [
   [ 0.0,  0.0,   0.0],
   [ 2.6,  0.9,  -7.5],
-  [-2.8, -0.6, -15.0],
-  [ 2.4, -1.1, -22.5],
-  [-2.6,  1.2, -30.0],
-  [ 0.4, -0.3, -37.5],
+  [-2.6, -1.1, -15.0],
+  [ 2.4,  1.2, -22.5],
+  [-0.4, -0.3, -30.0],
 ];
 // Which side of the screen the active neuron should sit on (camera offset sign).
-const SIDE = [1, -1, 1, -1, 1, -1];
+const SIDE = [1, -1, 1, -1, 1];
 
 // Synapse backbone: consecutive hops + two long skips for richness.
-const BACKBONE = [[0,1],[1,2],[2,3],[3,4],[4,5],[0,2],[3,5]];
+const BACKBONE = [[0,1],[1,2],[2,3],[3,4],[0,2],[2,4]];
 
 const V = new Vector3();
 const LOOK = new Vector3();
@@ -46,10 +49,11 @@ function pickCount() {
 }
 
 // ---- per-project lightning geometry ---------------------------------------
-// Each neuron is an electric glyph, not a particle swarm. Six modes, three
-// yang (discharging outward: storm / burst / path) alternating with three
-// yin (absorbing inward: cycle / wave / halo). Returns a list of polylines
-// in hub-local space; points and bolt lines are both built from them.
+// Each neuron is an electric glyph, not a particle swarm. Six possible modes
+// exist — yang (discharging outward: storm 0 / burst 2 / path 4) and yin
+// (absorbing inward: cycle 1 / wave 3 / halo 5) — a project's `mode` field
+// picks one; not every mode has to be in use. Returns a list of polylines in
+// hub-local space; points and bolt lines are both built from them.
 const TAU = Math.PI * 2;
 const rnd = (a, b) => a + Math.random() * (b - a);
 
@@ -349,7 +353,7 @@ const BOLT_VERT = /* glsl */`
   uniform float uTime, uChapter, uMorph, uFocus, uAspect, uPush, uHelixAngle;
   uniform vec2 uPointer;
   attribute vec3 aNetwork, aYin, aColor, aHubPos, aMini;
-  attribute float aHub, aSegT, aPhase, aMiniT;
+  attribute float aHub, aSegT, aPhase, aMiniT, aGlyphMode, aPolB;
   varying vec3 vColor;
   varying float vSegT, vPhase, vMode, vM1, vReveal, vFocus;
   void main() {
@@ -398,11 +402,10 @@ const BOLT_VERT = /* glsl */`
     vec2 ndc = clip.xy / max(clip.w, 0.0001);
     vec2 toP = (ndc - uPointer) * vec2(uAspect, 1.0);
     float push = smoothstep(0.30, 0.0, length(toP)) * uPush * (1.0 - hubLag);
-    float bpol = 1.0 - 2.0 * mod(aHub, 2.0);
-    mv.xy += normalize(toP + 1e-5) * push * 0.22 * bpol;
+    mv.xy += normalize(toP + 1e-5) * push * 0.22 * aPolB;
     gl_Position = projectionMatrix * mv;
 
-    vColor = aColor; vSegT = aSegT; vPhase = aPhase; vMode = aHub;
+    vColor = aColor; vSegT = aSegT; vPhase = aPhase; vMode = aGlyphMode;
     vM1 = m1;
     // visible as a mini on the helix, then as the full glyph once arrived.
     // minis read brighter (1.8x) since they're tiny — colors must pop.
@@ -537,10 +540,15 @@ export async function createExperience({ canvas, projects, onReady, onFrame, onH
 
   const count = pickCount();
   const NH = HUBS.length;
+  // Glyph mode (which signature animation) and yin-yang polarity are explicit
+  // per-project fields, NOT derived from array position — so removing or
+  // reordering a project never reshuffles another project's identity.
+  const HUB_MODE = projects.map((p) => p.mode);
+  const HUB_POL = projects.map((p) => p.pol);
 
   // ---- chapter timeline --------------------------------------------------
-  // 0 intro · 1..6 projects · 7 me (vortex → face) · 8 contact
-  const WEIGHTS = [0.7, 1, 1, 1, 1, 1, 1, 1.6, 1.1];
+  // 0 intro · 1..NH projects · NH+1 me (vortex → face) · NH+2 contact
+  const WEIGHTS = [0.7, ...Array(NH).fill(1), 1.6, 1.1];
   const TOTAL_W = WEIGHTS.reduce((a, b) => a + b, 0);
   const NCH = WEIGHTS.length;
   // progress p (0..1) → continuous chapter coordinate c (0..NCH)
@@ -599,13 +607,13 @@ export async function createExperience({ canvas, projects, onReady, onFrame, onH
   // thickness) and sitting right on the strand. MINI_R/MINI_LOCI are shared
   // by the bolt geometry (aMini) AND the DOM hotspot projection so the
   // clickable center always tracks the glyph as the helix turns.
-  const MINI_LOCI = [0.10, 0.26, 0.42, 0.58, 0.74, 0.90];
+  const MINI_LOCI = Array.from({ length: NH }, (_, i) => 0.10 + i * (0.80 / Math.max(1, NH - 1)));
   const MINI_R = 0.66;     // just off the strand (H_R=0.5) so each glyph reads
   const MINI_SCALE = 0.13; // small — a charm on the coil, but structure visible
   // world-space center of glyph h at helix angle `ang` (mirrors BOLT_VERT)
   function miniAnchor(h, ang, out) {
     const tt = MINI_LOCI[h];
-    const th = tt * H_TURNS * TAU + (h % 2 === 0 ? 0 : Math.PI);
+    const th = tt * H_TURNS * TAU + (HUB_POL[h] > 0 ? 0 : Math.PI);
     let x = Math.cos(th) * MINI_R, y = (tt - 0.5) * H_H + H_Y, z = Math.sin(th) * MINI_R;
     const hc = Math.cos(ang), hs = Math.sin(ang);
     [x, z] = [hc * x + hs * z, -hs * x + hc * z];      // xz by helix spin
@@ -651,13 +659,13 @@ export async function createExperience({ canvas, projects, onReady, onFrame, onH
   }
 
   // one lightning glyph per hub; particles sit ON the filaments
-  const HUB_BRANCHES = Array.from({ length: NH }, (_, h) => buildBranches(h));
+  const HUB_BRANCHES = Array.from({ length: NH }, (_, h) => buildBranches(HUB_MODE[h]));
 
   for (let i = 0; i < count; i++) {
     const isHub = i < NH;
     const h = isHub ? i : (i % NH);
     const hp = HUBS[h];
-    const pol = h % 2 === 0 ? 1 : -1;   // even hubs light, odd hubs shadow
+    const pol = HUB_POL[h];   // this project's own fire(+1)/water(-1) identity
 
     let nx = hp[0], ny = hp[1], nz = hp[2];
     if (!isHub) {
@@ -799,18 +807,19 @@ export async function createExperience({ canvas, projects, onReady, onFrame, onH
           bC = new Float32Array(nB * 3), bHP = new Float32Array(nB * 3),
           bMini = new Float32Array(nB * 3);
     const bHub = new Float32Array(nB), bT = new Float32Array(nB),
-          bPh = new Float32Array(nB), bMiniT = new Float32Array(nB);
+          bPh = new Float32Array(nB), bMiniT = new Float32Array(nB),
+          bGlyphMode = new Float32Array(nB), bPolB = new Float32Array(nB);
 
     // gene loci: where each project's mini-glyph sits on the helix strand
     const LOCI = MINI_LOCI;
     const ANCHORS = LOCI.map((t, h) => {
-      const th = t * H_TURNS * TAU + (h % 2 === 0 ? 0 : Math.PI);
+      const th = t * H_TURNS * TAU + (HUB_POL[h] > 0 ? 0 : Math.PI);
       return [Math.cos(th) * MINI_R, (t - 0.5) * H_H + H_Y, Math.sin(th) * MINI_R];
     });
 
     const yyTmp = new Float32Array(3);
     segs.forEach((sg, si) => {
-      const pol = sg.h % 2 === 0 ? 1 : -1;
+      const pol = HUB_POL[sg.h];
       // per-segment taijitu target: a short streak so bolts dissolve cleanly
       yinYangPoint(pol, yyTmp, 0);
       const dx = rnd(-0.15, 0.15), dy = rnd(-0.15, 0.15);
@@ -829,6 +838,8 @@ export async function createExperience({ canvas, projects, onReady, onFrame, onH
         bMini[v*3] = an[0]; bMini[v*3+1] = an[1]; bMini[v*3+2] = an[2];
         bHub[v] = sg.h; bT[v] = tp; bPh[v] = sg.phase;
         bMiniT[v] = LOCI[sg.h];
+        bGlyphMode[v] = HUB_MODE[sg.h];
+        bPolB[v] = pol;
       });
     });
 
@@ -843,6 +854,8 @@ export async function createExperience({ canvas, projects, onReady, onFrame, onH
     boltGeo.setAttribute("aSegT", new BufferAttribute(bT, 1));
     boltGeo.setAttribute("aPhase", new BufferAttribute(bPh, 1));
     boltGeo.setAttribute("aMiniT", new BufferAttribute(bMiniT, 1));
+    boltGeo.setAttribute("aGlyphMode", new BufferAttribute(bGlyphMode, 1));
+    boltGeo.setAttribute("aPolB", new BufferAttribute(bPolB, 1));
 
     var boltMat = new ShaderMaterial({
       uniforms, vertexShader: BOLT_VERT, fragmentShader: BOLT_FRAG,
@@ -951,7 +964,7 @@ export async function createExperience({ canvas, projects, onReady, onFrame, onH
     const w = window.innerWidth, h = window.innerHeight;
     const m = uniforms.uMorph.value;
     const ha = uniforms.uHelixAngle.value;
-    // intro: the six mini-glyphs orbit the helix. Their clickable centers
+    // intro: the mini-glyphs orbit the helix. Their clickable centers
     // track the live anchor (only while the helix is still assembled).
     const introMode = curC < 0.55;
     const out = [];
@@ -959,7 +972,7 @@ export async function createExperience({ canvas, projects, onReady, onFrame, onH
       if (introMode) {
         miniAnchor(i, ha, HUB_V);
         HUB_V.project(camera);
-        // all six are clickable; back-side ones still project to a valid spot
+        // all are clickable; back-side ones still project to a valid spot
         const visible = HUB_V.z < 1 &&
                         Math.abs(HUB_V.x) < 1.05 && Math.abs(HUB_V.y) < 1.05;
         out.push({ i, x: (HUB_V.x * 0.5 + 0.5) * w, y: (-HUB_V.y * 0.5 + 0.5) * h, visible, mini: true });
@@ -1066,6 +1079,7 @@ export async function createExperience({ canvas, projects, onReady, onFrame, onH
     });
   }
 
+  if (DEBUG) window.__debugScene = { scene, camera, group, uniforms, HUBS, NH, HUB_MODE, HUB_POL, MINI_LOCI, geo, points, renderer, pointMat };
   onReady && onReady({ count, portraitOk: ok });
 
   return {

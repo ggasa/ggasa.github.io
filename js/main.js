@@ -1,7 +1,7 @@
 // main.js — orchestration for the journey.
 // Scroll position → progress → scene. Scene frames → overlay states.
-import { PROFILE, PROJECTS } from "../data/projects.js?v=13";
-import { createExperience } from "./scene.js?v=13";
+import { PROFILE, PROJECTS } from "../projects/projects.js?v=16";
+import { createExperience } from "./scene.js?v=16";
 
 const $ = (s, r = document) => r.querySelector(s);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -32,7 +32,7 @@ hotspotLayer.addEventListener("click", (e) => {
   if (btn) window.open(PROJECTS[btn.dataset.i].link, "_blank", "noopener");
 });
 
-// chapter rail: intro + 6 projects + me + contact
+// chapter rail: intro + N projects + me + contact
 const RAIL_ITEMS = ["Intro", ...PROJECTS.map((p) => p.short), "Me", "Contact"];
 const rail = $("#rail");
 rail.innerHTML = RAIL_ITEMS.map((label, i) => {
@@ -40,6 +40,7 @@ rail.innerHTML = RAIL_ITEMS.map((label, i) => {
   return `<button data-ch="${i}" style="--c:${accent}" aria-label="${label}"><span class="rl">${label}</span></button>`;
 }).join("");
 const railBtns = [...rail.querySelectorAll("button")];
+$("#card-total").textContent = String(PROJECTS.length).padStart(2, "0");
 
 // ---------- overlays ----------
 const ovIntro = $("#ov-intro");
@@ -176,10 +177,10 @@ if (!reduceMotion) {
 }
 
 // ---------- frame → overlay states ----------
-const NP = PROJECTS.length; // 6
+const NP = PROJECTS.length;
 let lastStates = "";
 function handleFrame({ c, morph, chapter, localT }) {
-  // chapters: 0 intro · 1..6 projects · 7 me (vortex→face) · 8 contact
+  // chapters: 0 intro · 1..NP projects · NP+1 me (vortex→face) · NP+2 contact
   // Cards show only during a chapter's DWELL (camera parked at the neuron),
   // so the framed glyph and the card accent always belong to the same project.
   const introOn = c < 0.6;
@@ -199,9 +200,9 @@ function handleFrame({ c, morph, chapter, localT }) {
     ovConverge.classList.toggle("on", convergeOn);
     ovContact.classList.toggle("on", contactOn);
 
-    // rail active dot: 0 intro, 1..6 projects, 7 me, 8 contact
-    const railIdx = contactOn ? 8
-      : c >= NP + 1 ? 7
+    // rail active dot: 0 intro, 1..NP projects, NP+1 me, NP+2 contact
+    const railIdx = contactOn ? NP + 2
+      : c >= NP + 1 ? NP + 1
       : c >= 1 ? projIdx + 1 : 0;
     railBtns.forEach((b, i) => b.classList.toggle("active", i === railIdx));
   }

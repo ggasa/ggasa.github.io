@@ -22,7 +22,13 @@ export const PROFILE = {
     "roots, a UX research chapter, and a bias toward things that are both rigorous and legible.",
 };
 
-// The six hub-neurons. Ordered roughly by recency / prominence.
+// The five hub-neurons. Ordered roughly by recency / prominence.
+// `mode` is the neuron's signature glyph (0 storm, 1 cycle, 3 wave, 4 path,
+// 5 halo — see buildBranches() in scene.js; 2/burst was Vision's and is
+// retired with it, not reassigned) and `pol` is its yin-yang polarity
+// (+1 fire/yang, -1 water/yin). Both are explicit fields — NOT derived from
+// array position — so a project can be added or removed without reshuffling
+// every other project's animation and color identity.
 export const PROJECTS = [
   {
     id: "eeg",
@@ -35,9 +41,10 @@ export const PROJECTS = [
       "BCI Competition IV-2a dataset. ~70% accuracy on raw, non-stationary EEG by tuning " +
       "neural decoders to the signal, not the other way around.",
     tags: ["PyTorch", "TCN", "EEG", "Time-series"],
-    link: "projects/eeg.html",
+    link: "projects/eeg/",
     accent: "#fbbf24", // yang / fire — gold lightning (neural firing)
     motif: "storm",  // yang — jagged bolts, intermittent strikes
+    mode: 0, pol: 1,
   },
   {
     id: "aces",
@@ -46,27 +53,15 @@ export const PROJECTS = [
     kicker: "LLM Agents • Real-time Systems",
     period: "2026",
     blurb:
-      "Upgraded a one-shot multi-agent prototype into a 24/7 control system. Specialized " +
-      "LLM agents coordinated via LangChain + LangGraph, a unified entity data model, and " +
-      "volatility-based safety limits — all surfaced through a live dashboard.",
+      "A phased experiment testing whether multi-agent LLM systems can trade well enough " +
+      "to trust. Specialized agents read indicators, chart patterns, and trend structure " +
+      "in parallel via LangChain + LangGraph, with four architectures and two model " +
+      "choices tested head-to-head before any of it touches real capital.",
     tags: ["LangGraph", "LangChain", "LLM", "Python"],
-    link: "projects/aces.html",
+    link: "projects/aces/",
     accent: "#34d399", // yin / water — terminal emerald (24/7 markets)
     motif: "cycle",  // yin — ring wave circling inward (24/7 loop)
-  },
-  {
-    id: "vision",
-    title: "Recognition & Segmentation",
-    short: "Vision",
-    kicker: "Computer Vision • Deep Learning",
-    period: "Jan – May 2025",
-    blurb:
-      "CNNs for large-scale scene recognition (~70%) and ResNet-backed semantic " +
-      "segmentation for pixel-level labeling. Built and trained end-to-end in PyTorch.",
-    tags: ["PyTorch", "ResNet", "CNN", "Segmentation"],
-    link: "projects/vision.html",
-    accent: "#fb923c", // yang / fire — flash orange (camera)
-    motif: "burst",  // yang — synchronized radial flash (camera)
+    mode: 1, pol: -1,
   },
   {
     id: "biomarker",
@@ -79,9 +74,10 @@ export const PROJECTS = [
       "models (regression, trees) on non-stationary physiology — ~0.70 AUC, with candidate " +
       "biomarkers surfaced via game-theoretic (SHAP-style) interpretability.",
     tags: ["scikit-learn", "ETL", "SHAP", "Statistics"],
-    link: "projects/biomarker.html",
+    link: "projects/biomarker/",
     accent: "#a78bfa", // yin / water — neuro violet (inner states)
     motif: "wave",   // yin — slow glow along waveform traces
+    mode: 3, pol: -1,
   },
   {
     id: "maze",
@@ -93,9 +89,10 @@ export const PROJECTS = [
       "Vision pipeline (preprocessing + SVM) reading road signs for autonomous navigation, " +
       "tuned inside the ROS2 Nav2 stack to trim sensor-to-actuator latency.",
     tags: ["ROS2", "Nav2", "SVM", "OpenCV"],
-    link: "projects/maze.html",
+    link: "projects/maze/",
     accent: "#f87171", // yang / fire — signal red (road signs)
     motif: "path",   // yang — pulses racing right-angle corridors
+    mode: 4, pol: 1,
   },
   {
     id: "dtx",
@@ -108,9 +105,10 @@ export const PROJECTS = [
       "qualitative/quantitative research, standardized validation frameworks, and findings " +
       "presented at Korea's HCI conference.",
     tags: ["UX Research", "DTx", "Mixed-methods"],
-    link: "projects/dtx.html",
+    link: "projects/dtx/",
     accent: "#7dd3fc", // yin / water — therapeutic sky (calm)
     motif: "halo",   // yin — concentric breathing rings
+    mode: 5, pol: -1,
   },
 ];
 

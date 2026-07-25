@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A.C.E.S — Agentic Control System — Dan Kim</title>
+  <link rel="stylesheet" href="../project.css" />
+  <style>
+    /* Extra tokens + a few layout helpers this page's diagrams/tables need,
+       on top of the shared project.css palette. */
+    :root {
+      --muted:       var(--ink-dim);
+      --surface-2:   rgba(120, 150, 200, 0.07);
+      --accent-soft: color-mix(in srgb, var(--accent) 16%, transparent);
+      --rule:        var(--line);
+      --accent-ink:  var(--accent);
+      --up:          var(--accent);
+    }
+    .content .roman { color: var(--accent-ink); font-family: var(--mono); font-weight: 600; margin-right: 0.4em; }
+    .diagram-pair {
+      display: flex; flex-wrap: wrap; gap: 1.4rem; margin-top: 1.5em;
+    }
+    .diagram-pair figure {
+      flex: 1 1 260px; margin: 0; padding: 1.1rem 1.1rem 1.3rem;
+      border: 1px solid var(--line); border-radius: 12px; background: var(--glass);
+    }
+    .diagram-pair .dcap {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+      color: var(--ink-soft); margin-bottom: 0.7rem; text-transform: uppercase;
+    }
+    .diagram-pair .dcap .metric { color: var(--accent-ink); font-weight: 700; text-transform: none; }
+    .diagram-pair svg { width: 100%; height: auto; display: block; }
+    .diagram-pair figcaption { margin-top: 0.7rem; font-size: 0.86rem; color: var(--ink-dim); text-align: left; font-style: italic; }
+    .landscape-legend { margin-top: 0.9rem; font-size: 0.82rem; color: var(--ink-dim); display: flex; flex-wrap: wrap; gap: 0.5rem 1.2rem; }
+    .landscape-legend .dot-key { display: inline-flex; align-items: center; gap: 0.35em; }
+    .landscape-legend .dk { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .landscape-legend .dk.full { background: var(--up); }
+    .landscape-legend .dk.half { background: var(--muted); opacity: 0.55; }
+    .landscape-legend .dk.empty { border: 1px solid var(--muted); }
+    table.pricing td.num, table.pricing th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+    table.pricing tr.highlight td { background: rgba(52, 211, 153, 0.07); }
+    table.pricing .modelname { font-weight: 650; color: var(--ink); }
+    .source-note { font-size: 0.82rem !important; color: var(--ink-dim) !important; }
+    .source-note a { color: var(--ink-dim); }
+    blockquote.callout {
+      border-left: 2px solid var(--accent); padding: 0.7em 0 0.7em 1.2em;
+      background: var(--glass); border-radius: 0 10px 10px 0;
+    }
+    blockquote.callout .head {
+      display: block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--accent-ink); margin-bottom: 0.4em; font-style: normal;
+    }
+  </style>
+</head>
+<body style="--accent: #34d399;">
+  <nav class="topbar"><a class="back" href="../../index.html">&larr; Back to the network</a></nav>
+
+  <header class="hero">
+    <span class="dot"></span>
+    <p class="kicker">LLM Agents • Real-time Systems</p>
+    <h1>A.C.E.S — Agentic Control System</h1>
+    <p class="lede">A rigorous, phased experiment testing whether multi-agent LLM systems can make trading decisions worth trusting — specialized agents read indicators, chart patterns, and trend structure in parallel, weighed by a decision agent, with four architectures and two model choices tested head-to-head before any of it touches real capital.</p>
+    <div class="meta">
+      <span>2026</span>
+      <span class="tag">LangGraph</span>
+      <span class="tag">LangChain</span>
+      <span class="tag">LLM</span>
+      <span class="tag">Python</span>
+    </div>
+    <div class="actions">
+      <a class="btn primary" href="https://github.com/ggasa" target="_blank" rel="noopener">View code &#8599;</a>
+    </div>
+  </header>
+
+  <div class="rule"></div>
+
+  <main class="content">
+    <p class="lede" style="max-width:none; margin:0; text-align:left; color:var(--ink);">Not "can an LLM sound like a trader" — can four different multi-agent architectures, tested against each other under the same conditions, produce decisions worth risking capital on.</p>
+
+    <h2>Why I built this</h2>
+    <p>I've traded long enough to know what a good decision under uncertainty actually looks like — and how different that is from a confident-sounding paragraph. So when agentic AI systems started getting proposed as autonomous traders, I didn't want another demo of an LLM narrating a trade. I wanted to know, specifically: given the same chart, the same indicators, the same market moment, does a multi-agent system built to read them arrive at a decision a competent discretionary trader would actually stand behind? And if more than one architecture can do this, which one — and does the underlying model even matter as much as the framework wrapped around it?</p>
+    <p>That's the honest version of "can agentic AI replace a human trader here." Not a yes/no. A measured one, on a real instrument, with real money-shaped consequences if the answer's wrong — which is exactly why I built the harness before I trusted any of it.</p>
+
+    <h2>Four specialists, one verdict</h2>
+    <p>Every decision — LONG, SHORT, or HOLD on USDJPY, hourly — passes through the same four-stage read regardless of which architecture is running it:</p>
+    <ul>
+      <li><strong>Indicator</strong> — RSI, MACD, Stochastic, ROC, Williams %R, ATR, Bollinger — computed for real, not estimated by the model, and handed over as numbers.</li>
+      <li><strong>Pattern</strong> — a rendered candlestick chart, read by a vision-capable model for classical reversal/continuation formations — the model looks at the actual image, not a text description of it.</li>
+      <li><strong>Trend</strong> — the same chart, now annotated with fitted support/resistance lines, read for structure and with/counter-trend positioning.</li>
+      <li><strong>Decision</strong> — weighs all three reads into a directional call, a risk-reward ratio, and an ATR-scaled stop — the number that actually gets risked.</li>
+    </ul>
+    <p>What changes between architectures is <em>how</em> those four stages talk to each other — a parallel LangGraph pipeline, an AutoGen debate where the specialists cross-examine each other, a DSPy program whose prompts are optimized against realized P&amp;L instead of hand-tuned, and a LangGraph variant where a fifth agent reflects on the decision before it ships.</p>
+
+    <h3>From a relay to a fan-out</h3>
+    <p>The LangGraph baseline didn't start as parallel. This project builds on <strong>QuantAgent</strong> (the GitHub repo has since been renamed <em>QuantHarness</em>; the paper itself is still titled QuantAgent), a price-driven multi-agent trading system out of Stony Brook University — its reference implementation runs Indicator, Pattern, and Trend as a strict relay, each one waiting on the last before the Decision Maker ever sees anything:</p>
+
+    <div class="diagram-pair">
+      <figure>
+        <div class="dcap"><span>before — upstream reference</span><span class="metric">baseline</span></div>
+        <svg viewBox="0 0 300 372" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Series diagram: START leads to Indicator Agent, then Pattern Agent, then Trend Agent, then Decision Maker, then END, each waiting on the last.">
+          <defs>
+            <marker id="arrowB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"></path>
+            </marker>
+          </defs>
+          <g font-family="ui-monospace, Consolas, monospace" font-size="11">
+            <rect x="110" y="8" width="80" height="26" rx="13" fill="none" stroke="var(--muted)" stroke-width="1.2"></rect>
+            <text x="150" y="25" text-anchor="middle" fill="var(--muted)">START</text>
+            <line x1="150" y1="34" x2="150" y2="52" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowB)"></line>
+
+            <rect x="40" y="55" width="220" height="46" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <text x="150" y="83" text-anchor="middle" fill="var(--ink)" font-weight="600">Indicator Agent</text>
+            <line x1="150" y1="101" x2="150" y2="119" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowB)"></line>
+
+            <rect x="40" y="122" width="220" height="46" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <text x="150" y="150" text-anchor="middle" fill="var(--ink)" font-weight="600">Pattern Agent</text>
+            <line x1="150" y1="168" x2="150" y2="186" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowB)"></line>
+
+            <rect x="40" y="189" width="220" height="46" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <text x="150" y="217" text-anchor="middle" fill="var(--ink)" font-weight="600">Trend Agent</text>
+            <line x1="150" y1="235" x2="150" y2="253" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowB)"></line>
+
+            <rect x="30" y="256" width="240" height="46" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"></rect>
+            <text x="150" y="284" text-anchor="middle" fill="var(--ink)" font-weight="600">Decision Maker</text>
+            <line x1="150" y1="302" x2="150" y2="320" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowB)"></line>
+
+            <rect x="115" y="323" width="70" height="26" rx="13" fill="none" stroke="var(--muted)" stroke-width="1.2"></rect>
+            <text x="150" y="340" text-anchor="middle" fill="var(--muted)">END</text>
+          </g>
+        </svg>
+        <figcaption>One agent at a time. Total wall time is the sum of all four calls.</figcaption>
+      </figure>
+
+      <figure>
+        <div class="dcap"><span>after — this project, main branch</span><span class="metric">&minus;28% latency</span></div>
+        <svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Parallel diagram: START fans out to Indicator, Pattern, and Trend agents simultaneously, which all feed into Decision Maker, then END.">
+          <defs>
+            <marker id="arrowA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"></path>
+            </marker>
+          </defs>
+          <g font-family="ui-monospace, Consolas, monospace" font-size="12">
+            <rect x="280" y="8" width="80" height="26" rx="13" fill="none" stroke="var(--muted)" stroke-width="1.2"></rect>
+            <text x="320" y="25" text-anchor="middle" fill="var(--muted)">START</text>
+
+            <line x1="320" y1="34" x2="110" y2="66" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
+            <line x1="320" y1="34" x2="320" y2="66" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
+            <line x1="320" y1="34" x2="530" y2="66" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
+
+            <rect x="10" y="68" width="200" height="55" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <text x="110" y="100" text-anchor="middle" fill="var(--ink)" font-weight="600">Indicator Agent</text>
+
+            <rect x="220" y="68" width="200" height="55" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <text x="320" y="100" text-anchor="middle" fill="var(--ink)" font-weight="600">Pattern Agent</text>
+
+            <rect x="430" y="68" width="200" height="55" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <text x="530" y="100" text-anchor="middle" fill="var(--ink)" font-weight="600">Trend Agent</text>
+
+            <line x1="110" y1="123" x2="300" y2="161" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
+            <line x1="320" y1="123" x2="320" y2="161" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
+            <line x1="530" y1="123" x2="340" y2="161" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
+
+            <rect x="220" y="164" width="200" height="55" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"></rect>
+            <text x="320" y="196" text-anchor="middle" fill="var(--ink)" font-weight="600">Decision Maker</text>
+
+            <line x1="320" y1="219" x2="320" y2="246" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
+            <rect x="285" y="249" width="70" height="26" rx="13" fill="none" stroke="var(--muted)" stroke-width="1.2"></rect>
+            <text x="320" y="266" text-anchor="middle" fill="var(--muted)">END</text>
+          </g>
+        </svg>
+        <figcaption>Three independent reads run at once. Total wall time is the slowest single call, not the sum.</figcaption>
+      </figure>
+    </div>
+
+    <p>Indicator, Pattern, and Trend don't depend on each other's output — only the Decision Maker needs all three. Restructuring the graph so they fan out from <code>START</code> simultaneously instead of chaining sequentially cut end-to-end latency by roughly <strong>28%</strong>, with no change to what any individual agent sees or does. Same four specialists, same prompts — just no longer waiting in line.</p>
+    <p>Worth noting honestly: the QuantAgent paper never explains the sequential choice — I read through the full paper specifically checking for this, and "parallel," "sequential," "concurrent," and "simultaneously" don't appear in it in this context at all. The paper repeatedly frames low latency as a core motivation for the whole approach, which makes the sequential default a bit of a missed opportunity rather than a considered tradeoff — three independent reads with nothing to wait on each other for is about as free a latency win as this kind of system gets.</p>
+
+    <h2>One variable at a time, or the result means nothing</h2>
+    <p>The trap here is obvious in hindsight: if you swap both the model <em>and</em> the architecture at once and the numbers change, you've learned nothing about which one caused it. So the whole study is sequenced to isolate exactly one variable per phase:</p>
+    <ol>
+      <li><strong>Phase 0 — Baseline &amp; repeatability</strong> <em>(done)</em>. Five identical runs of the current model mix over the same week, before comparing anything — to find out how much a single model's own results move around on nothing but ordinary LLM nondeterminism, before that noise gets mistaken for a real signal later.</li>
+      <li><strong>Phase 1 — Model, architecture held constant</strong> <em>(in progress)</em>. DeepSeek + Gemini vs. all-MiniMax-M3, both on the same LangGraph pipeline, same window, five replicates each.</li>
+      <li><strong>Phase 2 — Architecture, model held constant</strong> <em>(pending)</em>. Whichever model wins Phase 1, tested across all four architectures. Each one now runs its own full pipeline independently — nobody reuses another system's analysis, so cost and latency are honestly comparable, not just decision quality.</li>
+      <li><strong>Phase 3 &amp; 4 — Re-sweep, then check for interaction</strong> <em>(pending)</em>. Re-optimize the winning architecture per model, then re-run the model swap on the second-best architecture — if the ranking flips, model and architecture interact, and the one-at-a-time result alone would have been misleading.</li>
+    </ol>
+
+    <h2>What "better" has to mean before I trust it</h2>
+    <p>Phase 1 is where I decide between the current mix and MiniMax-M3. I set three criteria before running anything, specifically so I couldn't quietly move the goalposts once I saw numbers I liked.</p>
+
+    <h3><span class="roman">I.</span>Price &amp; token economics</h3>
+    <p>Every decision is four real model calls, and two of them look at an image — vision tokens aren't free. Here's where the three models actually sit, per million tokens:</p>
+    <table class="pricing">
+      <tr><th>Model</th><th class="num">Input</th><th class="num">Output</th><th>Role in the study</th></tr>
+      <tr><td class="modelname">DeepSeek V4 Pro</td><td class="num">$0.435</td><td class="num">$0.87</td><td>baseline-mix — text stages</td></tr>
+      <tr><td class="modelname">Gemini 3 Flash</td><td class="num">$0.50</td><td class="num">$3.00</td><td>baseline-mix — vision stages</td></tr>
+      <tr class="highlight"><td class="modelname">MiniMax-M3</td><td class="num">$0.30</td><td class="num">$1.20</td><td>candidate — all four stages</td></tr>
+    </table>
+    <p>The output-price gap is the interesting part: Gemini's $3.00/M output is currently carrying both vision stages in the baseline mix. Worth being precise about what that figure actually is — Gemini 3 Flash Preview's own pricing lists one input rate covering text, image, and video alike ($0.50/M) and a single output rate ($3.00/M), because this model only ever writes text back; it doesn't generate images, so there's no separate "image price" being paid here. The rate itself doesn't care whether the input was a chart or a sentence — what actually drives cost is how many tokens the chart tokenizes into, not a higher per-token charge for looking at it. If MiniMax-M3 can read the same charts competently, the two most expensive calls in the whole pipeline get a lot cheaper — that's a real, quantifiable incentive to switch, <em>if</em> it holds up under criterion two. MiniMax's rate is also a standing 50% promotional cut off its own list price, which is its own note to self: don't build a permanent cost model on a promotional number.</p>
+    <p>That list pricing shows up in independent measurement too. Artificial Analysis's per-task cost figures (actual observed spend, not sticker price) put DeepSeek V4 Pro as the cheapest model in its intelligence-benchmark comparison set at <strong>$0.04/task</strong>, with MiniMax-M3 at $0.12/task — both well below the frontier models they're being weighed against. The gap holds on coding-agent tasks too, where DeepSeek V4 Pro came in at $0.27/task against $2&ndash;12+ for the frontier options in that comparison.</p>
+    <p class="source-note">Pricing as researched during this write-up — see <a href="https://openrouter.ai/minimax/minimax-m3" target="_blank" rel="noopener">MiniMax M3</a>, <a href="https://openrouter.ai/deepseek/deepseek-v4-pro" target="_blank" rel="noopener">DeepSeek V4 Pro</a>, and <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Gemini API pricing</a> for list rates; <a href="https://artificialanalysis.ai/models" target="_blank" rel="noopener">Artificial Analysis's model comparison</a> and <a href="https://artificialanalysis.ai/agents/coding-agents" target="_blank" rel="noopener">coding-agent benchmarks</a> for measured cost-per-task.</p>
+
+    <h3><span class="roman">II.</span>Capability, measured where it counts</h3>
+    <p>I started with Artificial Analysis's Intelligence Index — a composite across nine evals including GPQA Diamond, Humanity's Last Exam, and MMMU-Pro for visual reasoning, so multimodal capability is already part of what it's measuring, not something I had to check separately. On that index, DeepSeek V4 Pro and MiniMax-M3 land <strong>tied at 44</strong>. That tie is exactly why this can't be settled by leaderboard alone — general intelligence says "toss-up," which is a real finding, not a non-answer, and it's the reason Phase 1 has to run at all rather than being decided from a chart on someone else's website.</p>
+    <p>Where it stops being a toss-up is on a benchmark closer to the actual job. Vals AI's Finance Agent v2 — entry-level financial-analyst tasks against real filings — has MiniMax-M3 at <strong>48.27%</strong> (rank 17 of 40 models tested) against DeepSeek V4 at <strong>44.08%</strong> (rank 24 of 40), with MiniMax-M3 also costing about a third as much per test and running roughly 3x faster on that benchmark. Tied on general intelligence, ahead on the closest available proxy for this task, and cheaper doing it — that's a real reason to take MiniMax-M3 seriously as more than a cost play, not just a hunch.</p>
+    <p class="source-note">Sources: <a href="https://artificialanalysis.ai/models" target="_blank" rel="noopener">Artificial Analysis Intelligence Index</a>; <a href="https://www.vals.ai/benchmarks/fabv2" target="_blank" rel="noopener">Vals AI Finance Agent v2</a>.</p>
+
+    <h3><span class="roman">III.</span>Hallucination &amp; inconsistency</h3>
+    <p>This is the one that actually bit me already, in a different form. Early on, the vision agents would occasionally state a support level miles outside what the chart could possibly show — confidently citing a price the y-axis never contained. The fix was to explicitly anchor the prompt to the chart's real close and range before asking for an opinion, which stopped it. That's the category of failure this criterion watches for: not "wrong direction," but the model stating something false about the input it was just shown.</p>
+    <p>The other half is a subtler kind of inconsistency the backtest surfaced independently: this system's worst losses tend to come from all three specialists agreeing confidently right at a reversal — a unanimous, high-conviction, wrong call. Two of the four architectures (the AutoGen debate and the Reflexion variant) exist specifically because of that finding.</p>
+    <p>And here's the concrete reason I insisted on re-testing MiniMax fresh instead of carrying over an old impression: on that same Finance Agent v2 benchmark, <strong>MiniMax-M2.7 scores 27.89%</strong> — rank 38 of 40, near the bottom of the field. MiniMax-M3 scores <strong>48.27%</strong>. That's not a minor point release, it's the difference between "avoid this model for finance work" and "genuinely competitive," inside one model generation.</p>
+    <blockquote>A hallucination or consistency finding from a prior model generation doesn't transfer to the next one — treating it like it does is exactly the kind of shortcut this whole project is trying not to take, and the M2.7-to-M3 jump is the proof it isn't a hypothetical risk.</blockquote>
+    <p class="source-note">Source: <a href="https://www.vals.ai/benchmarks/fabv2" target="_blank" rel="noopener">Vals AI Finance Agent v2</a> — MiniMax-M3 vs. MiniMax-M2.7.</p>
+
+    <h2>Why not the other six</h2>
+    <p>Agent frameworks split roughly into four families. Before narrowing to what's actually in Phase 2, it's worth showing the full board — and being honest about which of these nine I've tested versus which I'm characterizing from well-documented, known architecture alone.</p>
+
+    <figure>
+      <svg viewBox="0 0 960 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tree diagram of agent frameworks grouped into State Machine, Conversational, Optimizer, and Autonomous families, each leaf scored on cost efficiency, fit for this task, and consistency safeguard.">
+        <defs>
+          <marker id="arrowL" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--rule)"></path>
+          </marker>
+        </defs>
+        <g font-family="ui-monospace, Consolas, monospace">
+          <rect x="372" y="8" width="200" height="34" rx="3" fill="var(--accent)" stroke="var(--accent)"></rect>
+          <text x="472" y="30" text-anchor="middle" fill="#04060c" font-size="13" font-weight="600">Agent Frameworks</text>
+
+          <line x1="472" y1="42" x2="55" y2="66" stroke="var(--rule)" stroke-width="1.2" marker-end="url(#arrowL)"></line>
+          <line x1="472" y1="42" x2="317" y2="66" stroke="var(--rule)" stroke-width="1.2" marker-end="url(#arrowL)"></line>
+          <line x1="472" y1="42" x2="580" y2="66" stroke="var(--rule)" stroke-width="1.2" marker-end="url(#arrowL)"></line>
+          <line x1="472" y1="42" x2="792" y2="66" stroke="var(--rule)" stroke-width="1.2" marker-end="url(#arrowL)"></line>
+
+          <rect x="0" y="68" width="110" height="30" rx="3" fill="none" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+          <text x="55" y="87" text-anchor="middle" fill="var(--ink)" font-size="11.5" font-weight="600">State Machine</text>
+          <rect x="115" y="68" width="405" height="30" rx="3" fill="none" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+          <text x="317" y="87" text-anchor="middle" fill="var(--ink)" font-size="11.5" font-weight="600">Conversational</text>
+          <rect x="525" y="68" width="110" height="30" rx="3" fill="none" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+          <text x="580" y="87" text-anchor="middle" fill="var(--ink)" font-size="11.5" font-weight="600">Optimizer</text>
+          <rect x="640" y="68" width="305" height="30" rx="3" fill="none" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+          <text x="792" y="87" text-anchor="middle" fill="var(--ink)" font-size="11.5" font-weight="600">Autonomous</text>
+
+          <line x1="55" y1="98" x2="55" y2="133" stroke="var(--rule)" stroke-width="1.1"></line>
+          <line x1="317" y1="98" x2="160" y2="133" stroke="var(--rule)" stroke-width="1.1"></line>
+          <line x1="317" y1="98" x2="265" y2="133" stroke="var(--rule)" stroke-width="1.1"></line>
+          <line x1="317" y1="98" x2="370" y2="133" stroke="var(--rule)" stroke-width="1.1"></line>
+          <line x1="317" y1="98" x2="475" y2="133" stroke="var(--rule)" stroke-width="1.1"></line>
+          <line x1="580" y1="98" x2="580" y2="133" stroke="var(--rule)" stroke-width="1.1"></line>
+          <line x1="792" y1="98" x2="685" y2="133" stroke="var(--rule)" stroke-width="1.1"></line>
+          <line x1="792" y1="98" x2="790" y2="133" stroke="var(--rule)" stroke-width="1.1"></line>
+          <line x1="792" y1="98" x2="895" y2="133" stroke="var(--rule)" stroke-width="1.1"></line>
+
+          <g>
+            <rect x="8" y="135" width="95" height="60" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"></rect>
+            <text x="55" y="152" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">LangGraph</text>
+            <text x="55" y="164" text-anchor="middle" fill="var(--accent-ink)" font-size="8.5">used here</text>
+            <circle cx="41" cy="180" r="4" fill="var(--up)"></circle>
+            <circle cx="55" cy="180" r="4" fill="var(--up)"></circle>
+            <circle cx="69" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+          </g>
+          <g>
+            <rect x="113" y="135" width="95" height="60" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"></rect>
+            <text x="160" y="152" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">AutoGen</text>
+            <text x="160" y="164" text-anchor="middle" fill="var(--accent-ink)" font-size="8.5">used here</text>
+            <circle cx="146" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <circle cx="160" cy="180" r="4" fill="var(--up)"></circle>
+            <circle cx="174" cy="180" r="4" fill="var(--up)"></circle>
+          </g>
+          <g>
+            <rect x="218" y="135" width="95" height="60" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
+            <text x="265" y="156" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">CrewAI</text>
+            <circle cx="251" cy="180" r="4" fill="var(--muted)" opacity="0.55"></circle>
+            <circle cx="265" cy="180" r="4" fill="var(--muted)" opacity="0.55"></circle>
+            <circle cx="279" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+          </g>
+          <g>
+            <rect x="323" y="135" width="95" height="60" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
+            <text x="370" y="156" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">MetaGPT</text>
+            <circle cx="356" cy="180" r="4" fill="var(--muted)" opacity="0.55"></circle>
+            <circle cx="370" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <circle cx="384" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+          </g>
+          <g>
+            <rect x="428" y="135" width="95" height="60" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
+            <text x="475" y="156" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">CAMEL</text>
+            <circle cx="461" cy="180" r="4" fill="var(--muted)" opacity="0.55"></circle>
+            <circle cx="475" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <circle cx="489" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+          </g>
+          <g>
+            <rect x="533" y="135" width="95" height="60" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"></rect>
+            <text x="580" y="152" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">DSPy</text>
+            <text x="580" y="164" text-anchor="middle" fill="var(--accent-ink)" font-size="8.5">used here</text>
+            <circle cx="566" cy="180" r="4" fill="var(--up)"></circle>
+            <circle cx="580" cy="180" r="4" fill="var(--up)"></circle>
+            <circle cx="594" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+          </g>
+          <g>
+            <rect x="638" y="135" width="95" height="60" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
+            <text x="685" y="156" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">AutoGPT</text>
+            <circle cx="671" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <circle cx="685" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <circle cx="699" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+          </g>
+          <g>
+            <rect x="743" y="135" width="95" height="60" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
+            <text x="790" y="156" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">BabyAGI</text>
+            <circle cx="776" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <circle cx="790" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <circle cx="804" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+          </g>
+          <g>
+            <rect x="848" y="135" width="95" height="60" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
+            <text x="895" y="156" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">SuperAGI</text>
+            <circle cx="881" cy="180" r="4" fill="var(--muted)" opacity="0.55"></circle>
+            <circle cx="895" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <circle cx="909" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+          </g>
+        </g>
+      </svg>
+      <figcaption>
+        <div class="landscape-legend">
+          <span><strong>Dots, left to right:</strong> cost efficiency &middot; fit for a bounded, structured decision &middot; built-in consistency safeguard</span>
+          <span class="dot-key"><span class="dk full"></span>favorable</span>
+          <span class="dot-key"><span class="dk half"></span>mixed / moderate</span>
+          <span class="dot-key"><span class="dk empty"></span>weak or absent</span>
+        </div>
+      </figcaption>
+    </figure>
+
+    <p>The highlighted three are the only ones I've actually run against this task — everything else is scored on well-documented default architecture, not a benchmark I ran, and I'm not pretending otherwise. MetaGPT and AutoGPT specifically were considered and rejected early: MetaGPT is a fixed, software-company-style SOP pipeline — not built for a single recurring trading call — and AutoGPT's open-ended, unbounded task loops are exactly the kind of uncontrolled autonomy a bounded, auditable decision shouldn't be handed to. CrewAI and CAMEL are genuine, capable role-based multi-agent frameworks; they simply were never in this project's actual comparison, so I'm not going to imply they were tested and came up short.</p>
+
+    <h2>Deferred on purpose</h2>
+    <p>I don't have a favorite architecture yet, and Phase 1 is specifically designed so I don't need one until the model question is settled first. Here's what's actually in the running for Phase 2:</p>
+    <ul>
+      <li><strong>LangGraph</strong> — the original baseline. Three specialists in parallel, one decision node. No debate, no revision; whatever it decides first is final.</li>
+      <li><strong>AutoGen</strong> — the same three specialists as a moderated debate, each forced to state the strongest reason its own read could be wrong before a closing synthesizer rules.</li>
+      <li><strong>DSPy</strong> — structurally identical to the LangGraph baseline, but the prompts aren't hand-written — an optimizer searches for the instructions and few-shot examples that maximize realized R on a training window.</li>
+      <li><strong>LangGraph + Reflexion</strong> — the baseline plus one addition: a reflector critiques the decision against the same reversal failure mode and can send it back for a bounded number of revisions before it ships.</li>
+    </ul>
+    <p>Worth being honest about: AutoGen's debate and the Reflexion variant are two different answers to the <em>same</em> diagnosed problem — dissent-by-design versus revise-on-critique. If one clearly outperforms the other in Phase 2, that's not just "framework A beat framework B," it's a real result about which failure-correction mechanism actually works better here.</p>
+
+    <h3>Reflexion, not LATS or plain self-refinement</h3>
+    <p>Self-critique loops aren't one idea, they're a small family, and I picked the middle of three real options:</p>
+    <ul>
+      <li><strong>Self-Refine</strong> — generate once, critique once, revise once — a single fixed pass, no memory of past attempts.</li>
+      <li><strong>Reflexion — chosen</strong> — generate, critique, and revise for a <em>bounded number of rounds</em>, with the critique from each round actually threaded into the next attempt.</li>
+      <li><strong>LATS</strong> — Monte Carlo tree search over multiple candidate decisions per step, each branch scored and expanded before one is chosen.</li>
+    </ul>
+    <p>LATS is the one I ruled out deliberately rather than by default, and the reason is specific to this task rather than a general knock on it. LATS earns its cost in domains with a real, cheap intermediate reward to search against — code that can be executed, a fact that can be checked against a retrieved source. A live trading decision has no such signal: you cannot know if LONG or SHORT was correct until real hours of price action actually pass, so there's nothing for the tree search to backpropagate against at decision time. Without that, LATS's branching reduces to repeated self-scoring across a wider, more expensive tree than Reflexion already does directly — likely several times the token cost per decision for a search advantage that depends on a reward signal this task doesn't have available synchronously. Self-Refine, on the other end, is a single fixed pass with no budget to escalate if the first critique isn't enough. Reflexion's bounded, memory-carrying loop was the deliberate middle: enough rounds to actually act on a critique, capped so cost stays predictable.</p>
+
+    <h2>Right now</h2>
+    <p>Phase 1 is running — five replicates of DeepSeek+Gemini and five of all-MiniMax-M3, same window, same architecture, hit-rate and net R compared once both sets finish, cost and latency captured throughout. This page will get the actual numbers when they exist; I'd rather ship the reasoning honestly incomplete than dress up a guess as a finding.</p>
+    <blockquote class="callout"><span class="head">Next up</span>Whichever model wins goes into Phase 2 — the four-architecture bake-off — with the model question already closed, so that comparison isn't confounded by anything but the architecture itself.</blockquote>
+
+    <h2>Sources</h2>
+    <ol>
+      <li>Fei Xiong, Xiang Zhang, Aosong Feng, Siqi Sun, Chenyu You. <a href="https://arxiv.org/abs/2509.09995" target="_blank" rel="noopener">QuantAgent: Price-Driven Multi-Agent LLMs for High-Frequency Trading</a>. arXiv:2509.09995, 2025 (v3). Upstream code at <a href="https://github.com/Y-Research-SBU/QuantHarness" target="_blank" rel="noopener">github.com/Y-Research-SBU/QuantHarness</a> — the repo was renamed QuantHarness after publication; the paper itself remains titled QuantAgent. This is the reference implementation this project's LangGraph baseline is derived from.</li>
+      <li>Noah Shinn, Federico Cassano, Edward Berman, Ashwin Gopinath, Karthik Narasimhan, Shunyu Yao. <a href="https://arxiv.org/abs/2303.11366" target="_blank" rel="noopener">Reflexion: Language Agents with Verbal Reinforcement Learning</a>. NeurIPS 2023.</li>
+      <li>Andy Zhou, Kai Yan, Michal Shlapentokh-Rothman, Haohan Wang, Yu-Xiong Wang. <a href="https://arxiv.org/abs/2310.04406" target="_blank" rel="noopener">Language Agent Tree Search Unifies Reasoning, Acting, and Planning in Language Models</a>. ICML 2024.</li>
+      <li>Aman Madaan, Niket Tandon, Prakhar Gupta, et al. <a href="https://arxiv.org/abs/2303.17651" target="_blank" rel="noopener">Self-Refine: Iterative Refinement with Self-Feedback</a>. arXiv:2303.17651, 2023.</li>
+      <li>Qingyun Wu, Gagan Bansal, Jieyu Zhang, Yiran Wu, Beibin Li, Erkang Zhu, Li Jiang, Xiaoyun Zhang, Shaokun Zhang, Jiale Liu, Ahmed Hassan Awadallah, Ryen W. White, Doug Burger, Chi Wang. <a href="https://arxiv.org/abs/2308.08155" target="_blank" rel="noopener">AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation</a>. arXiv:2308.08155, 2023. Framework used for the conversational-loop branch.</li>
+      <li>Omar Khattab, Arnav Singhvi, Paridhi Maheshwari, Zhiyuan Zhang, Keshav Santhanam, Sri Vardhamanan, Saiful Haq, Ashutosh Sharma, Thomas T. Joshi, Hanna Moazam, Heather Miller, Matei Zaharia, Christopher Potts. <a href="https://arxiv.org/abs/2310.03714" target="_blank" rel="noopener">DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines</a>. NeurIPS 2023 / arXiv:2310.03714. Framework used for the dspy-optimization branch.</li>
+      <li><a href="https://docs.langchain.com/oss/python/langgraph/overview" target="_blank" rel="noopener">LangGraph — official documentation</a>, LangChain Inc. LangGraph has no dedicated academic paper of its own (unlike AutoGen and DSPy above); it's an engineering framework documented through its own docs rather than introduced in a peer-reviewed publication. Framework used for the main and langgraph-reflexion branches.</li>
+    </ol>
+    <p class="source-note">Model pricing and benchmark figures: <a href="https://openrouter.ai/minimax/minimax-m3" target="_blank" rel="noopener">MiniMax M3</a>, <a href="https://openrouter.ai/deepseek/deepseek-v4-pro" target="_blank" rel="noopener">DeepSeek V4 Pro</a>, and <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Gemini API pricing</a> (list rates); <a href="https://artificialanalysis.ai/models" target="_blank" rel="noopener">Artificial Analysis Intelligence Index</a> and <a href="https://artificialanalysis.ai/agents/coding-agents" target="_blank" rel="noopener">coding-agent benchmarks</a>; <a href="https://www.vals.ai/benchmarks/fabv2" target="_blank" rel="noopener">Vals AI Finance Agent v2</a>.</p>
+  </main>
+
+  <footer class="foot"><a href="../../index.html">&larr; Back to the network</a></footer>
+</body>
+</html>
