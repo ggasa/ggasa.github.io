@@ -1,7 +1,7 @@
 // main.js — orchestration for the journey.
 // Scroll position → progress → scene. Scene frames → overlay states.
-import { PROFILE, PROJECTS } from "../projects/projects.js?v=17";
-import { createExperience } from "./scene.js?v=17";
+import { PROFILE, PROJECTS } from "../projects/projects.js?v=18";
+import { createExperience } from "./scene.js?v=18";
 
 const $ = (s, r = document) => r.querySelector(s);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -89,7 +89,13 @@ createExperience({
     for (const h of list) {
       const el = hotspotEls[h.i];
       el.style.display = h.visible ? "grid" : "none";
-      if (h.visible) { el.style.left = h.x + "px"; el.style.top = h.y + "px"; }
+      if (h.visible) {
+        el.style.left = h.x + "px";
+        el.style.top = h.y + "px";
+        // orbiting mini-glyphs can overlap on screen at certain helix angles;
+        // stack by depth so the one actually in front is the one that's clickable
+        el.style.zIndex = String(Math.round((1 - h.z) * 500));
+      }
     }
   },
 }).then((exp) => {

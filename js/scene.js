@@ -17,7 +17,7 @@ import {
   Points, LineSegments, AdditiveBlending, Color, Vector2, Vector3, MathUtils,
 } from "three";
 
-import { sampleFacePoints } from "./portrait.js?v=17";
+import { sampleFacePoints } from "./portrait.js?v=18";
 
 // ---- world layout ------------------------------------------------------
 // Hub (soma) world positions — a winding corridor into depth. One entry per
@@ -975,7 +975,7 @@ export async function createExperience({ canvas, projects, onReady, onFrame, onH
         // all are clickable; back-side ones still project to a valid spot
         const visible = HUB_V.z < 1 &&
                         Math.abs(HUB_V.x) < 1.05 && Math.abs(HUB_V.y) < 1.05;
-        out.push({ i, x: (HUB_V.x * 0.5 + 0.5) * w, y: (-HUB_V.y * 0.5 + 0.5) * h, visible, mini: true });
+        out.push({ i, x: (HUB_V.x * 0.5 + 0.5) * w, y: (-HUB_V.y * 0.5 + 0.5) * h, z: HUB_V.z, visible, mini: true });
         continue;
       }
       HUB_V.set(HUBS[i][0], HUBS[i][1], HUBS[i][2]);
@@ -983,7 +983,7 @@ export async function createExperience({ canvas, projects, onReady, onFrame, onH
       const revealed = uniforms.uChapter.value - i > 0.6;
       const visible = m < 0.4 && revealed && HUB_V.z < 1 &&
                       Math.abs(HUB_V.x) < 1.1 && Math.abs(HUB_V.y) < 1.1;
-      out.push({ i, x: (HUB_V.x * 0.5 + 0.5) * w, y: (-HUB_V.y * 0.5 + 0.5) * h, visible, mini: false });
+      out.push({ i, x: (HUB_V.x * 0.5 + 0.5) * w, y: (-HUB_V.y * 0.5 + 0.5) * h, z: HUB_V.z, visible, mini: false });
     }
     onHubScreen(out);
   }
