@@ -42,7 +42,15 @@
 
     <h2>Why this problem</h2>
     <p>Epilepsy affects roughly 50 million people worldwide, and close to 30% don't achieve seizure control from medication alone. For that drug-resistant population, Deep Brain Stimulation (DBS) of the thalamus (usually the anterior nucleus, ANT; sometimes the centromedian nucleus, CM) is an established alternative. It works by delivering controlled electrical pulses to disrupt the networks that generate and spread seizures.</p>
+    <figure class="shot">
+      <img src="img/thalamus-nuclei.png" alt="Labeled diagram of the thalamic nuclei, with the centromedian nucleus highlighted" />
+      <figcaption>The thalamic nuclei. This cohort's leads targeted the anterior nucleus (ANT) or, less often, the centromedian nucleus (CM, highlighted).</figcaption>
+    </figure>
     <p>What it doesn't have is an objective feedback signal. Clinicians tune amplitude, pulse width, frequency, and electrode configuration largely by trial and error, guided by patient-reported outcomes over months. There's no equivalent of a blood test that says "this is working" or "try a different setting." Modern hardware (this cohort used the Medtronic Percept device) happens to record local field potentials (LFP) continuously alongside stimulation, which means the raw signal for a biomarker is already being collected. The question is whether anything useful is hiding in it.</p>
+    <figure class="shot">
+      <img src="img/dbs-device.png" alt="Illustration of the implanted DBS lead in the brain wirelessly relaying LFP signal data to an external device" />
+      <figcaption>The Percept device records local field potentials from the implanted lead continuously, alongside stimulation, and relays them out. That's the raw signal everything downstream is built from.</figcaption>
+    </figure>
 
     <h2>The data</h2>
     <p>Thirty-three epilepsy patients, all on thalamic DBS via Percept. Responders were defined as a &gt;50% reduction in seizure frequency relative to a pre-implant baseline. Because visits per patient were uneven (most contributed one, some two or three), I used a sliding-window epoching scheme at the visit level to get a workable sample size without pretending unequal patients were equally represented.</p>
@@ -61,7 +69,11 @@
     </figure>
 
     <h2>Pipeline</h2>
-    <p>Raw LFP arrives as JSON exports off the device. I built a Python ETL to pull the time-domain signal out of that JSON into a structured form, then handed it to MATLAB for heartbeat-artifact removal (cardiac contamination is a known problem in chronic brain recordings) using the Percept Toolbox, followed by sliding-window epoching. Feature engineering and every model downstream of that ran in Python.</p>
+    <p>Raw LFP arrives as time-domain JSON exports off the device. Heartbeat-artifact removal happens first, in MATLAB, using the Percept Toolbox (cardiac contamination is a known problem in chronic brain recordings). From there, I built a Python program to pull the cleaned time-domain signal out of that MATLAB time series into a structured, uniform form. Sliding-window epoching, feature engineering, and every model downstream of that ran in Python.</p>
+    <figure class="shot">
+      <img src="img/artifact-removal.png" alt="MATLAB heartbeat-artifact removal: detected ECG template, spectral power before and after cleaning, and the full trace with contaminated segments removed" />
+      <figcaption>Heartbeat-artifact removal in MATLAB: a consistent ECG template is detected in the LFP (top left), cleaning flattens the low-frequency spectral peaks it was causing (top right), and the contaminated segments (red) are cut from the trace passed downstream (bottom).</figcaption>
+    </figure>
     <figure class="shot">
       <img src="img/pipeline.png" alt="Pipeline diagram: left and right hemisphere LFP feed power-spectra, coherence, and aperiodic-slope estimation, producing per-hemisphere feature vectors that concatenate into the classifier's feature set" />
       <figcaption>Per hemisphere: power spectra → 5-band power, coherence → ImCoh connectivity, and the aperiodic slope, concatenated into one feature vector per epoch.</figcaption>
