@@ -1,7 +1,7 @@
 // main.js — orchestration for the journey.
 // Scroll position → progress → scene. Scene frames → overlay states.
-import { PROFILE, PROJECTS } from "../projects/projects.js?v=16";
-import { createExperience } from "./scene.js?v=16";
+import { PROFILE, PROJECTS } from "../projects/projects.js?v=17";
+import { createExperience } from "./scene.js?v=17";
 
 const $ = (s, r = document) => r.querySelector(s);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));

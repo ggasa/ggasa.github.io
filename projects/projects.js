@@ -48,7 +48,7 @@ export const PROJECTS = [
   },
   {
     id: "aces",
-    title: "A.C.E.S — Agentic Control System",
+    title: "Agentic Control and Execution System for automated trading",
     short: "Agents",
     kicker: "LLM Agents • Real-time Systems",
     period: "2026",

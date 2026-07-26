@@ -17,7 +17,7 @@ import {
   Points, LineSegments, AdditiveBlending, Color, Vector2, Vector3, MathUtils,
 } from "three";
 
-import { sampleFacePoints } from "./portrait.js?v=16";
+import { sampleFacePoints } from "./portrait.js?v=17";
 
 // ---- world layout ------------------------------------------------------
 // Hub (soma) world positions — a winding corridor into depth. One entry per
