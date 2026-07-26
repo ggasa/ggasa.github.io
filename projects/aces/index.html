@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>A.C.E.S — Agentic Control System — Dan Kim</title>
+  <title>Agentic Control and Execution System for automated trading — Dan Kim</title>
   <link rel="stylesheet" href="../project.css" />
   <style>
     /* Extra tokens + a few layout helpers this page's diagrams/tables need,
@@ -22,6 +22,12 @@
     }
     .diagram-pair figure {
       flex: 1 1 260px; margin: 0; padding: 1.1rem 1.1rem 1.3rem;
+      border: 1px solid var(--line); border-radius: 12px; background: var(--glass);
+    }
+    /* a single diagram, centered rather than stretched full-width */
+    .diagram-solo { display: flex; justify-content: center; margin-top: 1.5em; }
+    .diagram-solo figure {
+      flex: 0 1 440px; margin: 0; padding: 1.1rem 1.1rem 1.3rem;
       border: 1px solid var(--line); border-radius: 12px; background: var(--glass);
     }
     .diagram-pair .dcap {
@@ -58,13 +64,16 @@
 
   <header class="hero">
     <span class="dot"></span>
-    <p class="kicker">LLM Agents • Real-time Systems</p>
-    <h1>A.C.E.S — Agentic Control System</h1>
-    <p class="lede">A rigorous, phased experiment testing whether multi-agent LLM systems can make trading decisions worth trusting — specialized agents read indicators, chart patterns, and trend structure in parallel, weighed by a decision agent, with four architectures and two model choices tested head-to-head before any of it touches real capital.</p>
+    <p class="kicker">Automated Trading • Agentic AI • AI Frameworks</p>
+    <h1>A.C.E.S - Agentic Control and Execution System for automated trading</h1>
+    <p class="lede">Exploring agentic AI systems (multi-agent approach) to automate trading. Would this be the future of trading?</p>
     <div class="meta">
       <span>2026</span>
+      <span class="tag">Agentic AI</span>
       <span class="tag">LangGraph</span>
       <span class="tag">LangChain</span>
+      <span class="tag">AutoGen</span>
+      <span class="tag">DSPy</span>
       <span class="tag">LLM</span>
       <span class="tag">Python</span>
     </div>
@@ -76,26 +85,13 @@
   <div class="rule"></div>
 
   <main class="content">
-    <p class="lede" style="max-width:none; margin:0; text-align:left; color:var(--ink);">Not "can an LLM sound like a trader" — can four different multi-agent architectures, tested against each other under the same conditions, produce decisions worth risking capital on.</p>
+    <p class="lede" style="max-width:none; margin:0; text-align:left; color:var(--ink);">Not "can an LLM sound like a trader?" but can four different multi-agent architectures, tested against each other under the same conditions, produce decisions and provide net surplus, so it's worth risking capital on.</p>
 
     <h2>Why I built this</h2>
-    <p>I've traded long enough to know what a good decision under uncertainty actually looks like — and how different that is from a confident-sounding paragraph. So when agentic AI systems started getting proposed as autonomous traders, I didn't want another demo of an LLM narrating a trade. I wanted to know, specifically: given the same chart, the same indicators, the same market moment, does a multi-agent system built to read them arrive at a decision a competent discretionary trader would actually stand behind? And if more than one architecture can do this, which one — and does the underlying model even matter as much as the framework wrapped around it?</p>
-    <p>That's the honest version of "can agentic AI replace a human trader here." Not a yes/no. A measured one, on a real instrument, with real money-shaped consequences if the answer's wrong — which is exactly why I built the harness before I trusted any of it.</p>
+    <p>I've traded enough on my own to achieve some level of profit, now that I have traded for over a few years. I still don't know a lot about trading but at least I can testify with my revenue rate, which is above X% from my baseline at the moment. However, this was to experiment and get myself used to trading so the amount of seed used was very small. Recently, AI and espeically LLMs have been changing the world in almost every domain. I got curious about automated trading with AI agents and started looking into Agentic AI systems. I wanted to test whether a multi-agent system built to read the market can arrive at a decision to automate trading so one could earn profits without governing and hovering over the system to make deicions. And if so, how can one achieve the best possible profit and maximize their revenue?</p>
 
     <h2>Four specialists, one verdict</h2>
-    <p>Every decision — LONG, SHORT, or HOLD on USDJPY, hourly — passes through the same four-stage read regardless of which architecture is running it:</p>
-    <ul>
-      <li><strong>Indicator</strong> — RSI, MACD, Stochastic, ROC, Williams %R, ATR, Bollinger — computed for real, not estimated by the model, and handed over as numbers.</li>
-      <li><strong>Pattern</strong> — a rendered candlestick chart, read by a vision-capable model for classical reversal/continuation formations — the model looks at the actual image, not a text description of it.</li>
-      <li><strong>Trend</strong> — the same chart, now annotated with fitted support/resistance lines, read for structure and with/counter-trend positioning.</li>
-      <li><strong>Decision</strong> — weighs all three reads into a directional call, a risk-reward ratio, and an ATR-scaled stop — the number that actually gets risked.</li>
-    </ul>
-    <p>What changes between architectures is <em>how</em> those four stages talk to each other — a parallel LangGraph pipeline, an AutoGen debate where the specialists cross-examine each other, a DSPy program whose prompts are optimized against realized P&amp;L instead of hand-tuned, and a LangGraph variant where a fifth agent reflects on the decision before it ships.</p>
-
-    <h3>From a relay to a fan-out</h3>
-    <p>The LangGraph baseline didn't start as parallel. This project builds on <strong>QuantAgent</strong> (the GitHub repo has since been renamed <em>QuantHarness</em>; the paper itself is still titled QuantAgent), a price-driven multi-agent trading system out of Stony Brook University — its reference implementation runs Indicator, Pattern, and Trend as a strict relay, each one waiting on the last before the Decision Maker ever sees anything:</p>
-
-    <div class="diagram-pair">
+    <div class="diagram-solo">
       <figure>
         <div class="dcap"><span>before — upstream reference</span><span class="metric">baseline</span></div>
         <svg viewBox="0 0 300 372" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Series diagram: START leads to Indicator Agent, then Pattern Agent, then Trend Agent, then Decision Maker, then END, each waiting on the last.">
@@ -125,48 +121,61 @@
             <text x="150" y="284" text-anchor="middle" fill="var(--ink)" font-weight="600">Decision Maker</text>
             <line x1="150" y1="302" x2="150" y2="320" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowB)"></line>
 
-            <rect x="115" y="323" width="70" height="26" rx="13" fill="none" stroke="var(--muted)" stroke-width="1.2"></rect>
+            <rect x="110" y="323" width="80" height="26" rx="13" fill="none" stroke="var(--muted)" stroke-width="1.2"></rect>
             <text x="150" y="340" text-anchor="middle" fill="var(--muted)">END</text>
           </g>
         </svg>
         <figcaption>One agent at a time. Total wall time is the sum of all four calls.</figcaption>
       </figure>
+    </div>
+    <p>Every decision — LONG, SHORT, or HOLD on (USDJPY), hourly — passes through the same four-stage read regardless of which architecture is running it:</p>
+    <ul>
+      <li><strong>Indicator</strong> — Relative Strength Index (momentum indicator), MACD (Mean Average Convergence Divergence), Stochastic Oscillator, Rate of Change (ROC, momentum oscillator), Williams %R (momentum indicator), Average True Range (ATR, for dynamic stop-loss), Bollinger Bands (Momentum and Volatility) — computed for real, not estimated by the model, and handed over as numbers.</li>
+      <li><strong>Pattern</strong> — a rendered candlestick chart, read by a vision-capable model for classical reversal/continuation formations — the model looks at the actual image, not a text description of it.</li>
+      <li><strong>Trend</strong> — the same chart, now annotated with fitted support/resistance lines, read for structure and with/counter-trend positioning.</li>
+      <li><strong>Decision</strong> — weighs all three reads into a directional call, a risk-reward ratio, and an ATR-scaled stop — the number that actually gets risked.</li>
+    </ul>
+    <p>What changes between architectures is <em>how</em> those four stages talk to each other — a parallel LangGraph pipeline, an AutoGen debate where the specialists cross-examine each other, a DSPy program whose prompts are optimized against realized P&amp;L instead of hand-tuned, and a LangGraph variant where a fifth agent reflects on the decision before it ships.</p>
 
+    <h3>From linear to parallel</h3>
+    <p>First thing that caught my attention was the fact that initial design was linear. This project builds on QuantAgent (the GitHub repo has since been renamed QuantHarness), a price-driven multi-agent trading system - there are four agents which analyszes Indicators, Patterns, and Trends as a strict relay, each one waiting on the last before the Decision Agent makes the final decision</p>
+
+    <div class="diagram-solo">
       <figure>
         <div class="dcap"><span>after — this project, main branch</span><span class="metric">&minus;28% latency</span></div>
-        <svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Parallel diagram: START fans out to Indicator, Pattern, and Trend agents simultaneously, which all feed into Decision Maker, then END.">
+        <svg viewBox="0 0 640 310" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Parallel diagram: START fans out to Indicator, Pattern, and Trend agents simultaneously, which all feed into Decision Maker, then END.">
           <defs>
             <marker id="arrowA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"></path>
             </marker>
           </defs>
           <g font-family="ui-monospace, Consolas, monospace" font-size="12">
-            <rect x="280" y="8" width="80" height="26" rx="13" fill="none" stroke="var(--muted)" stroke-width="1.2"></rect>
-            <text x="320" y="25" text-anchor="middle" fill="var(--muted)">START</text>
+            <rect x="283.5" y="8" width="73" height="31" rx="15.5" fill="none" stroke="var(--muted)" stroke-width="1.2"></rect>
+            <text x="320" y="27.7" text-anchor="middle" fill="var(--muted)">START</text>
 
-            <line x1="320" y1="34" x2="110" y2="66" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
-            <line x1="320" y1="34" x2="320" y2="66" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
-            <line x1="320" y1="34" x2="530" y2="66" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
+            <line x1="320" y1="39" x2="110" y2="71" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
+            <line x1="320" y1="39" x2="320" y2="71" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
+            <line x1="320" y1="39" x2="530" y2="71" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
 
-            <rect x="10" y="68" width="200" height="55" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
-            <text x="110" y="100" text-anchor="middle" fill="var(--ink)" font-weight="600">Indicator Agent</text>
+            <rect x="10" y="73" width="200" height="55" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <text x="110" y="105" text-anchor="middle" fill="var(--ink)" font-weight="600">Indicator Agent</text>
 
-            <rect x="220" y="68" width="200" height="55" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
-            <text x="320" y="100" text-anchor="middle" fill="var(--ink)" font-weight="600">Pattern Agent</text>
+            <rect x="220" y="73" width="200" height="55" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <text x="320" y="105" text-anchor="middle" fill="var(--ink)" font-weight="600">Pattern Agent</text>
 
-            <rect x="430" y="68" width="200" height="55" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
-            <text x="530" y="100" text-anchor="middle" fill="var(--ink)" font-weight="600">Trend Agent</text>
+            <rect x="430" y="73" width="200" height="55" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <text x="530" y="105" text-anchor="middle" fill="var(--ink)" font-weight="600">Trend Agent</text>
 
-            <line x1="110" y1="123" x2="300" y2="161" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
-            <line x1="320" y1="123" x2="320" y2="161" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
-            <line x1="530" y1="123" x2="340" y2="161" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
+            <line x1="110" y1="128" x2="300" y2="166" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
+            <line x1="320" y1="128" x2="320" y2="166" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
+            <line x1="530" y1="128" x2="340" y2="166" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
 
-            <rect x="220" y="164" width="200" height="55" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"></rect>
-            <text x="320" y="196" text-anchor="middle" fill="var(--ink)" font-weight="600">Decision Maker</text>
+            <rect x="220" y="169" width="200" height="55" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"></rect>
+            <text x="320" y="201" text-anchor="middle" fill="var(--ink)" font-weight="600">Decision Maker</text>
 
-            <line x1="320" y1="219" x2="320" y2="246" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
-            <rect x="285" y="249" width="70" height="26" rx="13" fill="none" stroke="var(--muted)" stroke-width="1.2"></rect>
-            <text x="320" y="266" text-anchor="middle" fill="var(--muted)">END</text>
+            <line x1="320" y1="224" x2="320" y2="251" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
+            <rect x="283.5" y="254" width="73" height="31" rx="15.5" fill="none" stroke="var(--muted)" stroke-width="1.2"></rect>
+            <text x="320" y="273.7" text-anchor="middle" fill="var(--muted)">END</text>
           </g>
         </svg>
         <figcaption>Three independent reads run at once. Total wall time is the slowest single call, not the sum.</figcaption>
@@ -178,8 +187,160 @@
 
     <h2>One variable at a time, or the result means nothing</h2>
     <p>The trap here is obvious in hindsight: if you swap both the model <em>and</em> the architecture at once and the numbers change, you've learned nothing about which one caused it. So the whole study is sequenced to isolate exactly one variable per phase:</p>
+
+    <figure>
+      <svg viewBox="0 0 700 565" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram of the five-phase experiment plan, arranged as phase 0 and phase 1 on the top row, phase 2 and phase 3 on the second row, and phase 4 alone at the bottom as the concluding step, connected by arrows. Phase 0 (target icon) establishes a baseline: a repeatability check and a parallel-versus-series architecture shootout. Phase 1 (chip icon) compares models with architecture held constant (padlock icon). Phase 2 (node-graph icon) compares architectures with model held constant (padlock icon). Phase 3 (dial icon) re-optimizes the winning architecture per model. Phase 4 (overlapping-circles icon) checks whether model and architecture interact, by re-testing the swap on the second-best architecture.">
+        <defs>
+          <marker id="arrowP" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--rule)"></path>
+          </marker>
+          <!-- icon library: each drawn on a 24x24 grid, instantiated below via <use> -->
+          <g id="icon-target">
+            <circle cx="12" cy="12" r="10" fill="none" stroke="var(--accent-ink)" stroke-width="1.4"></circle>
+            <circle cx="12" cy="12" r="5.5" fill="none" stroke="var(--accent-ink)" stroke-width="1.4"></circle>
+            <circle cx="12" cy="12" r="1.8" fill="var(--accent-ink)"></circle>
+          </g>
+          <g id="icon-chip">
+            <rect x="6" y="6" width="12" height="12" rx="2" fill="none" stroke="var(--accent-ink)" stroke-width="1.4"></rect>
+            <circle cx="12" cy="12" r="2.2" fill="var(--accent-ink)"></circle>
+            <line x1="12" y1="1" x2="12" y2="6" stroke="var(--accent-ink)" stroke-width="1.4"></line>
+            <line x1="12" y1="18" x2="12" y2="23" stroke="var(--accent-ink)" stroke-width="1.4"></line>
+            <line x1="1" y1="12" x2="6" y2="12" stroke="var(--accent-ink)" stroke-width="1.4"></line>
+            <line x1="18" y1="12" x2="23" y2="12" stroke="var(--accent-ink)" stroke-width="1.4"></line>
+          </g>
+          <g id="icon-network">
+            <circle cx="5" cy="6" r="3.2" fill="none" stroke="var(--accent-ink)" stroke-width="1.4"></circle>
+            <circle cx="19" cy="6" r="3.2" fill="none" stroke="var(--accent-ink)" stroke-width="1.4"></circle>
+            <circle cx="12" cy="19" r="3.2" fill="none" stroke="var(--accent-ink)" stroke-width="1.4"></circle>
+            <line x1="7.4" y1="8.2" x2="10.2" y2="16.2" stroke="var(--accent-ink)" stroke-width="1.3"></line>
+            <line x1="16.6" y1="8.2" x2="13.8" y2="16.2" stroke="var(--accent-ink)" stroke-width="1.3"></line>
+            <line x1="8.2" y1="6" x2="15.8" y2="6" stroke="var(--accent-ink)" stroke-width="1.3"></line>
+          </g>
+          <g id="icon-dial">
+            <line x1="5" y1="2" x2="5" y2="22" stroke="var(--ink-soft)" stroke-width="1.3"></line>
+            <line x1="12" y1="2" x2="12" y2="22" stroke="var(--ink-soft)" stroke-width="1.3"></line>
+            <line x1="19" y1="2" x2="19" y2="22" stroke="var(--ink-soft)" stroke-width="1.3"></line>
+            <circle cx="5" cy="8" r="2.3" fill="var(--accent-ink)"></circle>
+            <circle cx="12" cy="16" r="2.3" fill="var(--accent-ink)"></circle>
+            <circle cx="19" cy="11" r="2.3" fill="var(--accent-ink)"></circle>
+          </g>
+          <g id="icon-venn">
+            <circle cx="9" cy="12" r="7.5" fill="none" stroke="var(--accent-ink)" stroke-width="1.4"></circle>
+            <circle cx="15" cy="12" r="7.5" fill="none" stroke="var(--accent-ink)" stroke-width="1.4"></circle>
+          </g>
+          <g id="icon-lock">
+            <rect x="4" y="10" width="16" height="12" rx="2" fill="none" stroke="var(--ink-dim)" stroke-width="1.6"></rect>
+            <path d="M7,10 V7.5 a5,5 0 0 1 10,0 V10" fill="none" stroke="var(--ink-dim)" stroke-width="1.6"></path>
+            <circle cx="12" cy="16" r="1.7" fill="var(--ink-dim)"></circle>
+          </g>
+          <g id="icon-loop">
+            <path d="M19,12 A7,7 0 1 1 12,5" fill="none" stroke="var(--accent-ink)" stroke-width="1.7" stroke-linecap="round"></path>
+            <path d="M12,5 L8,6 M12,5 L11,9" fill="none" stroke="var(--accent-ink)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+          </g>
+          <g id="icon-fork">
+            <line x1="12" y1="2" x2="12" y2="10" stroke="var(--accent-ink)" stroke-width="1.6"></line>
+            <line x1="12" y1="10" x2="5" y2="20" stroke="var(--accent-ink)" stroke-width="1.6"></line>
+            <line x1="12" y1="10" x2="19" y2="20" stroke="var(--accent-ink)" stroke-width="1.6"></line>
+            <circle cx="5" cy="20" r="1.8" fill="var(--accent-ink)"></circle>
+            <circle cx="19" cy="20" r="1.8" fill="var(--accent-ink)"></circle>
+          </g>
+          <!-- provider marks: official icons, MIT-licensed from lobehub/lobe-icons
+               (github.com/lobehub/lobe-icons, packages/static-svg/icons) — original
+               viewBox 0 0 24 24, fill="currentColor", recolored to var(--accent-ink)
+               to match this diagram's palette. Copyright (c) 2023 LobeHub. -->
+          <g id="icon-deepseek" fill="var(--accent-ink)" fill-rule="evenodd">
+            <path d="M23.748 4.482c-.254-.124-.364.113-.512.234-.051.039-.094.09-.137.136-.372.397-.806.657-1.373.626-.829-.046-1.537.214-2.163.848-.133-.782-.575-1.248-1.247-1.548-.352-.156-.708-.311-.955-.65-.172-.241-.219-.51-.305-.774-.055-.16-.11-.323-.293-.35-.2-.031-.278.136-.356.276-.313.572-.434 1.202-.422 1.84.027 1.436.633 2.58 1.838 3.393.137.093.172.187.129.323-.082.28-.18.552-.266.833-.055.179-.137.217-.329.14a5.526 5.526 0 01-1.736-1.18c-.857-.828-1.631-1.742-2.597-2.458a11.365 11.365 0 00-.689-.471c-.985-.957.13-1.743.388-1.836.27-.098.093-.432-.779-.428-.872.004-1.67.295-2.687.684a3.055 3.055 0 01-.465.137 9.597 9.597 0 00-2.883-.102c-1.885.21-3.39 1.102-4.497 2.623C.082 8.606-.231 10.684.152 12.85c.403 2.284 1.569 4.175 3.36 5.653 1.858 1.533 3.997 2.284 6.438 2.14 1.482-.085 3.133-.284 4.994-1.86.47.234.962.327 1.78.397.63.059 1.236-.03 1.705-.128.735-.156.684-.837.419-.961-2.155-1.004-1.682-.595-2.113-.926 1.096-1.296 2.746-2.642 3.392-7.003.05-.347.007-.565 0-.845-.004-.17.035-.237.23-.256a4.173 4.173 0 001.545-.475c1.396-.763 1.96-2.015 2.093-3.517.02-.23-.004-.467-.247-.588zM11.581 18c-2.089-1.642-3.102-2.183-3.52-2.16-.392.024-.321.471-.235.763.09.288.207.486.371.739.114.167.192.416-.113.603-.673.416-1.842-.14-1.897-.167-1.361-.802-2.5-1.86-3.301-3.307-.774-1.393-1.224-2.887-1.298-4.482-.02-.386.093-.522.477-.592a4.696 4.696 0 011.529-.039c2.132.312 3.946 1.265 5.468 2.774.868.86 1.525 1.887 2.202 2.891.72 1.066 1.494 2.082 2.48 2.914.348.292.625.514.891.677-.802.09-2.14.11-3.054-.614zm1-6.44a.306.306 0 01.415-.287.302.302 0 01.2.288.306.306 0 01-.31.307.303.303 0 01-.304-.308zm3.11 1.596c-.2.081-.399.151-.59.16a1.245 1.245 0 01-.798-.254c-.274-.23-.47-.358-.552-.758a1.73 1.73 0 01.016-.588c.07-.327-.008-.537-.239-.727-.187-.156-.426-.199-.688-.199a.559.559 0 01-.254-.078c-.11-.054-.2-.19-.114-.358.028-.054.16-.186.192-.21.356-.202.767-.136 1.146.016.352.144.618.408 1.001.782.391.451.462.576.685.914.176.265.336.537.445.848.067.195-.019.354-.25.452z"></path>
+          </g>
+          <g id="icon-gemini" fill="var(--accent-ink)" fill-rule="evenodd">
+            <path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z"></path>
+          </g>
+          <g id="icon-minimax" fill="var(--accent-ink)" fill-rule="evenodd">
+            <path d="M16.278 2c1.156 0 2.093.927 2.093 2.07v12.501a.74.74 0 00.744.709.74.74 0 00.743-.709V9.099a2.06 2.06 0 012.071-2.049A2.06 2.06 0 0124 9.1v6.561a.649.649 0 01-.652.645.649.649 0 01-.653-.645V9.1a.762.762 0 00-.766-.758.762.762 0 00-.766.758v7.472a2.037 2.037 0 01-2.048 2.026 2.037 2.037 0 01-2.048-2.026v-12.5a.785.785 0 00-.788-.753.785.785 0 00-.789.752l-.001 15.904A2.037 2.037 0 0113.441 22a2.037 2.037 0 01-2.048-2.026V18.04c0-.356.292-.645.652-.645.36 0 .652.289.652.645v1.934c0 .263.142.506.372.638.23.131.514.131.744 0a.734.734 0 00.372-.638V4.07c0-1.143.937-2.07 2.093-2.07zm-5.674 0c1.156 0 2.093.927 2.093 2.07v11.523a.648.648 0 01-.652.645.648.648 0 01-.652-.645V4.07a.785.785 0 00-.789-.78.785.785 0 00-.789.78v14.013a2.06 2.06 0 01-2.07 2.048 2.06 2.06 0 01-2.071-2.048V9.1a.762.762 0 00-.766-.758.762.762 0 00-.766.758v3.8a2.06 2.06 0 01-2.071 2.049A2.06 2.06 0 010 12.9v-1.378c0-.357.292-.646.652-.646.36 0 .653.29.653.646V12.9c0 .418.343.757.766.757s.766-.339.766-.757V9.099a2.06 2.06 0 012.07-2.048 2.06 2.06 0 012.071 2.048v8.984c0 .419.343.758.767.758.423 0 .766-.339.766-.758V4.07c0-1.143.937-2.07 2.093-2.07z"></path>
+          </g>
+        </defs>
+        <g font-family="ui-monospace, Consolas, monospace">
+          <!-- connectors: straight within a row, right-angle "elbow" between rows -->
+          <line x1="330" y1="95" x2="368" y2="95" stroke="var(--rule)" stroke-width="1.3" marker-end="url(#arrowP)"></line>
+          <path d="M525,170 V185 H175 V208" fill="none" stroke="var(--rule)" stroke-width="1.3" marker-end="url(#arrowP)"></path>
+          <line x1="330" y1="285" x2="368" y2="285" stroke="var(--rule)" stroke-width="1.3" marker-end="url(#arrowP)"></line>
+          <path d="M525,360 V378 H350 V398" fill="none" stroke="var(--rule)" stroke-width="1.3" marker-end="url(#arrowP)"></path>
+
+          <!-- PHASE 0 — establishing the baseline -->
+          <g>
+            <rect x="20" y="20" width="310" height="150" rx="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"></rect>
+            <use href="#icon-target" transform="translate(36,34)"></use>
+            <text x="70" y="50" fill="var(--ink)" font-size="12.5" font-weight="700">PHASE 0</text>
+            <line x1="36" y1="66" x2="314" y2="66" stroke="var(--accent)" stroke-width="1" opacity="0.35"></line>
+
+            <use href="#icon-loop" transform="translate(36,72) scale(0.65)"></use>
+            <text x="58" y="83" fill="var(--ink)" font-size="10.5" font-weight="600">Repeatability</text>
+            <text x="58" y="96" fill="var(--ink-soft)" font-size="9">5&times; identical runs of the</text>
+            <text x="58" y="108" fill="var(--ink-soft)" font-size="9">current mix, same week</text>
+            <use href="#icon-deepseek" transform="translate(192,100) scale(0.6)"></use>
+            <use href="#icon-gemini" transform="translate(210,99) scale(0.6)"></use>
+
+            <use href="#icon-fork" transform="translate(36,116) scale(0.65)"></use>
+            <text x="58" y="127" fill="var(--ink)" font-size="10.5" font-weight="600">Baseline shootout</text>
+            <text x="58" y="140" fill="var(--ink-soft)" font-size="9">parallel vs. series + the</text>
+            <text x="58" y="152" fill="var(--ink-soft)" font-size="9">original prompt, same period</text>
+          </g>
+
+          <!-- PHASE 1 — model is the variable -->
+          <g>
+            <rect x="370" y="20" width="310" height="150" rx="5" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <use href="#icon-chip" transform="translate(386,34)"></use>
+            <text x="420" y="50" fill="var(--ink)" font-size="12.5" font-weight="700">PHASE 1</text>
+            <line x1="386" y1="66" x2="664" y2="66" stroke="var(--ink-soft)" stroke-width="1" opacity="0.3"></line>
+            <text x="386" y="88" fill="var(--ink)" font-size="11.5" font-weight="600">Model comparison</text>
+            <text x="386" y="101" fill="var(--ink-soft)" font-size="10">DeepSeek + Gemini mix</text>
+            <text x="386" y="118" fill="var(--ink-soft)" font-size="10">vs. all-MiniMax-M3, 5 reps each</text>
+            <use href="#icon-deepseek" transform="translate(520,91) scale(0.42)"></use>
+            <use href="#icon-gemini" transform="translate(536,90) scale(0.42)"></use>
+            <use href="#icon-minimax" transform="translate(580,110) scale(0.42)"></use>
+            <use href="#icon-lock" transform="translate(386,138) scale(0.65)"></use>
+            <text x="408" y="149" fill="var(--ink-dim)" font-size="9.5" font-style="italic">architecture held fixed</text>
+          </g>
+
+          <!-- PHASE 2 — architecture is the variable -->
+          <g>
+            <rect x="20" y="210" width="310" height="150" rx="5" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <use href="#icon-network" transform="translate(36,224)"></use>
+            <text x="70" y="240" fill="var(--ink)" font-size="12.5" font-weight="700">PHASE 2</text>
+            <line x1="36" y1="258" x2="314" y2="258" stroke="var(--ink-soft)" stroke-width="1" opacity="0.3"></line>
+            <text x="36" y="278" fill="var(--ink)" font-size="11.5" font-weight="600">Architecture comparison</text>
+            <text x="36" y="291" fill="var(--ink-soft)" font-size="10">Phase 1's winner run across</text>
+            <text x="36" y="304" fill="var(--ink-soft)" font-size="10">all 4 architectures, solo</text>
+            <use href="#icon-lock" transform="translate(36,328) scale(0.65)"></use>
+            <text x="58" y="339" fill="var(--ink-dim)" font-size="9.5" font-style="italic">model held fixed</text>
+          </g>
+
+          <!-- PHASE 3 — re-optimize the winner -->
+          <g>
+            <rect x="370" y="210" width="310" height="150" rx="5" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <use href="#icon-dial" transform="translate(386,224)"></use>
+            <text x="420" y="240" fill="var(--ink)" font-size="12.5" font-weight="700">PHASE 3</text>
+            <line x1="386" y1="258" x2="664" y2="258" stroke="var(--ink-soft)" stroke-width="1" opacity="0.3"></line>
+            <text x="386" y="285" fill="var(--ink)" font-size="11.5" font-weight="600">Re-sweep</text>
+            <text x="386" y="300" fill="var(--ink-soft)" font-size="10">Re-optimize the winning</text>
+            <text x="386" y="313" fill="var(--ink-soft)" font-size="10">architecture, per model</text>
+          </g>
+
+          <!-- PHASE 4 — the payoff: do the two variables interact? -->
+          <g>
+            <rect x="195" y="400" width="310" height="150" rx="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"></rect>
+            <use href="#icon-venn" transform="translate(211,414)"></use>
+            <text x="245" y="430" fill="var(--ink)" font-size="12.5" font-weight="700">PHASE 4</text>
+            <line x1="211" y1="448" x2="489" y2="448" stroke="var(--accent)" stroke-width="1" opacity="0.35"></line>
+            <text x="211" y="468" fill="var(--ink)" font-size="11.5" font-weight="600">Interaction check</text>
+            <text x="211" y="483" fill="var(--ink-soft)" font-size="10">Re-test the swap on the</text>
+            <text x="211" y="497" fill="var(--ink-soft)" font-size="10">2nd-best arch. &mdash; ranking flip?</text>
+          </g>
+        </g>
+      </svg>
+    </figure>
+
     <ol>
-      <li><strong>Phase 0 — Baseline &amp; repeatability</strong> <em>(done)</em>. Five identical runs of the current model mix over the same week, before comparing anything — to find out how much a single model's own results move around on nothing but ordinary LLM nondeterminism, before that noise gets mistaken for a real signal later.</li>
+      <li><strong>Phase 0 — Baseline &amp; repeatability</strong> <em>(done)</em>. Two checks over the same week: five identical runs of the current parallel model mix, to see how much a single model's own results move around on nothing but ordinary LLM nondeterminism before that noise gets mistaken for a real signal later — and a head-to-head between that parallel baseline and the original QuantAgent series pipeline running its original prompt, so the series-vs-parallel question gets measured, not assumed, before any phase that follows builds on it.</li>
       <li><strong>Phase 1 — Model, architecture held constant</strong> <em>(in progress)</em>. DeepSeek + Gemini vs. all-MiniMax-M3, both on the same LangGraph pipeline, same window, five replicates each.</li>
       <li><strong>Phase 2 — Architecture, model held constant</strong> <em>(pending)</em>. Whichever model wins Phase 1, tested across all four architectures. Each one now runs its own full pipeline independently — nobody reuses another system's analysis, so cost and latency are honestly comparable, not just decision quality.</li>
       <li><strong>Phase 3 &amp; 4 — Re-sweep, then check for interaction</strong> <em>(pending)</em>. Re-optimize the winning architecture per model, then re-run the model swap on the second-best architecture — if the ranking flips, model and architecture interact, and the one-at-a-time result alone would have been misleading.</li>
