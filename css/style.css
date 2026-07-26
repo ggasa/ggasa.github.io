@@ -204,6 +204,11 @@ body::before {
   box-shadow: 0 30px 80px -30px rgba(0,0,0,0.8);
 }
 .ov-card.on { transform: translateY(-50%); }
+/* The card sits over the 3D corridor, and a hub hotspot can end up projected
+   right behind it. Only the "open project" link should intercept clicks —
+   everything else passes through to whatever hotspot is underneath. */
+.ov-card { pointer-events: none; }
+.ov-card #card-link { pointer-events: auto; }
 .card-node {
   display: flex; align-items: center; gap: 9px;
   font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; color: var(--ink-dim);
