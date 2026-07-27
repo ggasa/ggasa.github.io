@@ -38,7 +38,7 @@
   <div class="rule"></div>
 
   <main class="content">
-    <p class="lede" style="max-width:none; margin:0; text-align:left; color:var(--ink);">Not "can a model tell an epilepsy patient from a healthy one." Plenty of biomarkers already do that reasonably well. This asks a narrower, more clinically useful question: among patients already living with drug-resistant epilepsy and already implanted with a stimulator, does their own neural signal say anything about whether this specific therapy is going to work for them?</p>
+    <p class="lede" style="max-width:none; margin:0; text-align:left; color:var(--ink);"> In the research landsacpe of epilepsy, distinguishing between ictal and non-ictal states are a well resolved problem solved by recent advancements in AI and ML. However, this research asks a narrower, more clinically useful question of: among patients already living with drug-resistant epilepsy and already implanted with a stimulator, does their own neural signal say anything about whether this specific therapy is going to work for them?</p>
 
     <h2>Why this problem</h2>
     <p>Epilepsy affects roughly 50 million people worldwide, and close to 30% don't achieve seizure control from medication alone. For that drug-resistant population, Deep Brain Stimulation (DBS) of the thalamus (usually the anterior nucleus, ANT; sometimes the centromedian nucleus, CM) is an established alternative. It works by delivering controlled electrical pulses to disrupt the networks that generate and spread seizures.</p>
@@ -125,7 +125,7 @@
       <img src="img/shap-beeswarm.png" alt="SHAP beeswarm plot ranking features by impact on model output, led by right-hemisphere aperiodic slope, right delta and theta power, and left beta power" />
       <figcaption>SHAP beeswarm, Random Forest: right-hemisphere aperiodic slope and delta/theta power, plus left-hemisphere beta power, dominate the ranking. Color is feature value; position is impact on predicted responder probability.</figcaption>
     </figure>
-    <figure class="shot">
+        <figure class="shot">
       <img src="img/boxplot-visit.png" alt="Box plots of visit-level medians for right aperiodic slope, right delta power, left beta power, and right theta power, each showing a significant responder vs. non-responder difference by Mann-Whitney U test" />
       <figcaption>Visit-level medians (Mann-Whitney U, n = 43 visits) for all four features: right aperiodic slope (p = 0.0100), right delta power (p = 0.0108), left beta power (p = 0.0279), and right theta power (p = 0.0458).</figcaption>
     </figure>
