@@ -88,7 +88,7 @@
     <p class="lede" style="max-width:none; margin:0; text-align:left; color:var(--ink);">Integrating AI agents via LLM APIs as financial analysts that focus on technical analysis of the market.</p>
 
     <h2>Why I built this</h2>
-    <p>I've traded enough on my own to achieve some level of profit, now that I have traded for over a few years. I still don't know a lot about trading but at least I can testify with my revenue rate, which is above 50% from my baseline at the moment. However, this was to experiment and get myself used to trading so the amount of seed used was very small. Recently, AI and espeically LLMs have been changing the world in almost every domain. I got curious about automated trading with AI agents and started looking into Agentic AI systems. I wanted to test whether a multi-agent system built to read the market can arrive at a decision to automate trading so one could earn profits without governing and hovering over the system to make deicions. And if so, how can one achieve the best possible profit and maximize their revenue?</p>
+    <p>I've traded enough on my own to achieve some level of profit, now that I have traded for over a few years. I still don't know a lot about trading but at least I can testify with my revenue rate, which is above X% from my baseline at the moment. However, this was to experiment and get myself used to trading so the amount of seed used was very small. Recently, AI and espeically LLMs have been changing the world in almost every domain. I got curious about automated trading with AI agents and started looking into Agentic AI systems. I wanted to test whether a multi-agent system built to read the market can arrive at a decision to automate trading so one could earn profits without governing and hovering over the system to make deicions. And if so, how can one achieve the best possible profit and maximize their revenue?</p>
 
     <h2>Four specialists, one verdict</h2>
     <div class="diagram-solo">
@@ -128,7 +128,7 @@
         <figcaption>One agent at a time. Total wall time is the sum of all four calls.</figcaption>
       </figure>
     </div>
-    <p>Every decision — LONG, SHORT, or HOLD on (USDJPY), hourly — passes through the same four-stage read regardless of which architecture is running it:</p>
+    <p>Every decision — LONG or SHORT (USDJPY), hourly — passes through the same four-stage read regardless of which architecture is running it:</p>
     <ul>
       <li><strong>Indicator</strong> — Relative Strength Index (momentum indicator), MACD (Mean Average Convergence Divergence), Stochastic Oscillator, Rate of Change (ROC, momentum oscillator), Williams %R (momentum indicator), Average True Range (ATR, for dynamic stop-loss), Bollinger Bands (Momentum and Volatility) are actually computed not estimated by the model, and handed over as numbers.</li>
       <li><strong>Pattern</strong> — a rendered candlestick chart, read by a vision-capable model for classical reversal/continuation formations — the model looks at the actual image, not a text description of it.</li>
