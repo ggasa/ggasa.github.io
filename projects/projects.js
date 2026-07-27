@@ -50,6 +50,7 @@ export const PROJECTS = [
     id: "aces",
     title: "Agentic Control and Execution System for automated trading",
     short: "Agents",
+    abbr: "A.C.E.S",
     kicker: "LLM Agents • Real-time Systems",
     period: "2026",
     blurb:

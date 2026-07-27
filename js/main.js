@@ -1,7 +1,7 @@
 // main.js — orchestration for the journey.
 // Scroll position → progress → scene. Scene frames → overlay states.
-import { PROFILE, PROJECTS } from "../projects/projects.js?v=18";
-import { createExperience } from "./scene.js?v=18";
+import { PROFILE, PROJECTS } from "../projects/projects.js?v=19";
+import { createExperience } from "./scene.js?v=19";
 
 const $ = (s, r = document) => r.querySelector(s);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -24,7 +24,7 @@ $("#fallback-list").innerHTML = PROJECTS.map((p) =>
 const hotspotLayer = $("#hotspots");
 hotspotLayer.innerHTML = PROJECTS.map((p, i) => `
   <button class="hotspot" data-i="${i}" style="--accent:${p.accent}" aria-label="${p.title}">
-    <span class="hs-label">${p.title}</span>
+    <span class="hs-label">${p.abbr || p.title}</span>
   </button>`).join("");
 const hotspotEls = [...hotspotLayer.querySelectorAll(".hotspot")];
 hotspotLayer.addEventListener("click", (e) => {
