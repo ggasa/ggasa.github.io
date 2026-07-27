@@ -82,15 +82,15 @@
     <p class="lede" style="max-width:none; margin:0; text-align:left; color:var(--ink);">Integrating AI agents via LLM APIs as financial analysts that focus on technical analysis of the market.</p>
 
     <h2>Why I built this</h2>
-    <p>I've traded enough on my own to achieve some level of profit, now that I have traded for over a few years. I still don't know a lot about trading but at least I can testify with my revenue rate, which is above X% from my baseline at the moment. However, this was to experiment and get myself used to trading so the amount of seed used was very small. Recently, AI and espeically LLMs have been changing the world in almost every domain. I got curious about automated trading with AI agents and started looking into Agentic AI systems. I wanted to test whether a multi-agent system built to read the market can arrive at a decision to automate trading so one could earn profits without governing and hovering over the system to make deicions. And if so, how can one achieve the best possible profit and maximize their revenue?</p>
+    <p>I've traded enough on my own to achieve some level of profit, now that I have traded for over a few years. I still don't know a lot about trading but at least I can testify with my revenue rate, which is above X% from my baseline at the moment. However, this was to experiment and get myself used to trading so the amount of seed used was very small. Recently, AI and especially LLMs have been changing the world in almost every domain. I got curious about automated trading with AI agents and started looking into Agentic AI systems. I wanted to test whether a multi-agent system built to read the market can arrive at a decision to automate trading so one could earn profits without governing and hovering over the system to make decisions. And if so, how can one achieve the best possible profit and maximize their revenue?</p>
 
     <h2>Which factors can affect the performance greatly</h2>
-    <p>We can all agree that from the pareto principle that 20% of the core changes can lead to 80% of the performance. In agentic AI systems what could be those 20%? I thought these following factors were based on researching and learning about agentic AI systems:</p>
+    <p>We can all agree that from the Pareto principle that 20% of the core changes can lead to 80% of the performance. In agentic AI systems what could be those 20%? I thought these following factors were based on researching and learning about agentic AI systems:</p>
     <ol>
       <li><strong>What model is one using?</strong></li>
       <li><strong>What framework is one using?</strong></li>
     </ol>
-    <p>Although, Rasheed et al.'s 2026 study on comparing agentic frameworks for reasoning tasks (three benchmarks: BBH, GSM8K, ARC) revealed that framework choice should be driven by memory management, failure handling and cost control, not accuracy - as most frameworks acheived versy similar overall performance. This is why I chose to use LangChain, for a budget friendliness and implementing reflexion as a loop.</p>
+    <p>Although, Rasheed et al.'s 2026 study on comparing agentic frameworks for reasoning tasks (three benchmarks: BBH, GSM8K, ARC) revealed that framework choice should be driven by memory management, failure handling and cost control, not accuracy - as most frameworks achieved very similar overall performance. This is why I chose to use LangChain, for a budget friendliness and implementing reflexion as a loop.</p>
 
     <h2>Structure of A.C.E.S</h2>
     <div class="diagram-solo">
@@ -174,11 +174,11 @@
     <p>What changes between architectures is <em>how</em> those four stages talk to each other — a parallel LangGraph pipeline, an AutoGen debate where the specialists cross-examine each other, a DSPy program whose prompts are optimized against realized P&amp;L instead of hand-tuned, and a LangGraph variant where a fifth agent reflects on the decision before it ships.</p>
 
     <h3>From linear to parallel</h3>
-    <p>First thing that caught my attention was the fact that initial design was linear. This project builds on QuantAgent (the GitHub repo has since been renamed QuantHarness), a price-driven multi-agent trading system - there are four agents which analyszes Indicators, Patterns, and Trends as a strict relay, each one waiting on the last before the Decision Agent makes the final decision</p>
+    <p>First thing that caught my attention was the fact that initial design was linear. This project builds on QuantAgent (the GitHub repo has since been renamed QuantHarness), a price-driven multi-agent trading system - there are four agents which analyzes Indicators, Patterns, and Trends as a strict relay, each one waiting on the last before the Decision Agent makes the final decision</p>
 
     <div class="diagram-solo">
       <figure>
-        <div class="dcap"><span>after</span><span class="metric">&minus; -28% latency</span></div>
+        <div class="dcap"><span>after</span><span class="metric">&minus;28% latency</span></div>
         <svg viewBox="0 0 640 310" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Parallel diagram: START fans out to Indicator, Pattern, and Trend agents simultaneously, which all feed into Decision Maker, then END.">
           <defs>
             <marker id="arrowA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -364,7 +364,7 @@
       <li><strong>Phase 2 — Architecture, model held constant</strong> <em>(pending)</em>. Whichever model wins Phase 1, tested across all four architectures. Each one now runs its own full pipeline independently — nobody reuses another system's analysis, so cost and latency are honestly comparable, not just decision quality.</li>
     </ol>
 
-    <h2>Criterias for choosing</h2>
+    <h2>Criteria for choosing</h2>
 
     <h3><span class="roman">I.</span>Price &amp; token economics</h3>
     <p>Every decision is four real model calls, and two of them look at an image — vision tokens aren't free. Here's where the three models actually sit, per million tokens:</p>
@@ -379,7 +379,7 @@
     <p class="source-note">Pricing as researched during this write-up — see <a href="https://openrouter.ai/minimax/minimax-m3" target="_blank" rel="noopener">MiniMax M3</a>, <a href="https://openrouter.ai/deepseek/deepseek-v4-pro" target="_blank" rel="noopener">DeepSeek V4 Pro</a>, and <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Gemini API pricing</a> for list rates; <a href="https://artificialanalysis.ai/models" target="_blank" rel="noopener">Artificial Analysis's model comparison</a> and <a href="https://artificialanalysis.ai/agents/coding-agents" target="_blank" rel="noopener">coding-agent benchmarks</a> for measured cost-per-task.</p>
 
     <h3><span class="roman">II.</span>Capability (Intelligence)</h3>
-    <p>I started with Artificial Analysis's Intelligence Index — a composite across nine evals including GPQA Diamond, Humanity's Last Exam, and MMMU-Pro for visual reasoning, so multimodal capability is already part of what it's measuring, not something I had to check separately. On that index, DeepSeek V4 Pro on and MiniMax-M3 land <strong>tied at value of 44</strong>.They are both within top 15. However, the tie is exactly why this can't be settled by leaderboard alone. </p>
+    <p>I started with Artificial Analysis's Intelligence Index — a composite across nine evals including GPQA Diamond, Humanity's Last Exam, and MMMU-Pro for visual reasoning, so multimodal capability is already part of what it's measuring, not something I had to check separately. On that index, DeepSeek V4 Pro and MiniMax-M3 land <strong>tied at value of 44</strong>. They are both within top 15. However, the tie is exactly why this can't be settled by leaderboard alone. </p>
     <p>I thought this would be a good place to have a benchmark closer to the finance domain. Vals AI's Finance Agent v2 — entry-level financial-analyst tasks against real filings — has MiniMax-M3 at <strong>48.27%</strong> (rank 17 of 40 models tested) against DeepSeek V4 at <strong>44.08%</strong> (rank 24 of 40), with MiniMax-M3 also costing about a third as much per test and running roughly 3x faster on that benchmark. Tied on general intelligence, ahead on the closest available proxy for this task, and cheaper doing it. That's another reason to take MiniMax-M3.
 
     <p class="source-note">Sources: <a href="https://artificialanalysis.ai/models" target="_blank" rel="noopener">Artificial Analysis Intelligence Index</a>; <a href="https://www.vals.ai/benchmarks/fabv2" target="_blank" rel="noopener">Vals AI Finance Agent v2</a>.</p>
@@ -392,7 +392,7 @@
     <p class="source-note">Source: <a href="https://www.vals.ai/benchmarks/fabv2" target="_blank" rel="noopener">Vals AI Finance Agent v2</a> — MiniMax-M3 vs. MiniMax-M2.7.</p>
 
     <h2>Choosing my frameworks</h2>
-    <p>Agent frameworks split roughly into four families. Before narrowing to what's actually in Phase 2, it's worth showing the full board and being honest about which of these I''m planning to test.</p>
+    <p>Agent frameworks split roughly into four families. Before narrowing to what's actually in Phase 2, it's worth showing the full board and being honest about which of these I'm planning to test.</p>
 
     <figure>
       <svg viewBox="0 0 960 195" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tree diagram of agent frameworks grouped into State Machine, Conversational, Optimizer, and Autonomous families, with the three frameworks used in this project highlighted.">
@@ -491,9 +491,9 @@
       </svg>
     </figure>
 
-    <p>Phase 1 is specifically designed so I don't need one until the model question is settled first. I suspect DSPy will perform the best with it's innate ability to CoT and reflect/feedback. Here are frameworks I think are worth testing for Phase 2:</p>
+    <p>Phase 1 is specifically designed so I don't need one until the model question is settled first. I suspect DSPy will perform the best with its innate ability to CoT and reflect/feedback. Here are frameworks I think are worth testing for Phase 2:</p>
     <ul>
-      <li><strong>LangGraph</strong> — the original baseline framework. This is chosen for it's token efficiency and expandability of complex decision making such as integrating reflexion for improving judgements.</li>
+      <li><strong>LangGraph</strong> — the original baseline framework. This is chosen for its token efficiency and expandability of complex decision making such as integrating reflexion for improving judgements.</li>
       <li><strong>AutoGen</strong> — the same three specialists as a moderated debate, each forced to state the strongest reason its own read could be wrong before a closing synthesizer outputs the final decision.</li>
       <li><strong>DSPy</strong> — structurally identical to the LangGraph baseline, but the prompts aren't hand-written — an optimizer searches for the instructions and few-shot examples that maximize profit.</li>
       <li><strong>LangGraph + Reflexion</strong> — the baseline plus one addition: a reflector critiques the decision against the same reversal failure mode and can send it back for a bounded number of revisions before it ships.</li>
