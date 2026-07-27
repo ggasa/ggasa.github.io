@@ -69,14 +69,18 @@
     </figure>
 
     <h2>Pipeline</h2>
-    <p>Raw LFP arrives as time-domain JSON exports off the device. Heartbeat-artifact removal happens first, in MATLAB, using the Percept Toolbox (cardiac contamination is a known problem in chronic brain recordings). From there, I built a Python program to pull the cleaned time-domain signal out of that MATLAB time series into a structured, uniform form. Sliding-window epoching, feature engineering, and every model downstream of that ran in Python.</p>
+      <figure class="shot">
+        <img src="img/pipeline-overview.png" alt="Data pipeline of this research project"/>
+        <figcaption>Big picture schema of the data pipeline</figcaption>
+      </figure>
+    <p>Raw LFP arrives as JSON exports off the device. Manual inspection of generated signals from a customized MATLAB script to automate data extraction from JSON files is done. Afterwards, heartbeat-artifact removal happens, in MATLAB using a customized Percept Toolbox (cardiac contamination is a known problem in chronic brain recordings). From there, I built a Python program to pull the cleaned time-domain signal out of that MATLAB time series into a structured, uniform form for future feature generations for ML models.</p>
     <figure class="shot">
       <img src="img/artifact-removal.png" alt="MATLAB heartbeat-artifact removal: detected ECG template, spectral power before and after cleaning, and the full trace with contaminated segments removed" />
-      <figcaption>Heartbeat-artifact removal in MATLAB: a consistent ECG template is detected in the LFP (top left), cleaning flattens the low-frequency spectral peaks it was causing (top right), and the contaminated segments (red) are cut from the trace passed downstream (bottom).</figcaption>
+      <figcaption>Heartbeat-artifact removal in MATLAB: a consistent ECG template is detected in the LFP (top left), spectral power changes illustrated by the plot (top right), and the contaminated segments (red) are cut from the trace passed downstream (bottom).</figcaption>
     </figure>
     <figure class="shot">
       <img src="img/pipeline.png" alt="Pipeline diagram: left and right hemisphere LFP feed power-spectra, coherence, and aperiodic-slope estimation, producing per-hemisphere feature vectors that concatenate into the classifier's feature set" />
-      <figcaption>Per hemisphere: power spectra → 5-band power, coherence → ImCoh connectivity, and the aperiodic slope, concatenated into one feature vector per epoch.</figcaption>
+      <figcaption>Per hemisphere: power spectra → 5-band power, coherence → 5 ImCoh connectivity calculations, and one aperiodic slope = 11 features, concatenated into one feature vector per epoch.</figcaption>
     </figure>
 
     <h2>Features: three families, per hemisphere</h2>
@@ -88,16 +92,16 @@
     </ul>
 
     <h2>Modeling: getting the validation honest</h2>
-    <p>With 375 epochs but only 33 underlying patients, the real danger isn't underfitting; it's a model quietly memorizing individual patients' signal signatures and reporting inflated accuracy that has nothing to do with generalizing to a new patient. So the outer evaluation loop is <strong>leave-one-subject-out</strong>, not leave-one-epoch-out: every epoch from a held-out patient is invisible during that patient's test fold, full stop.</p>
+    <p>With 375 epochs but only 33 underlying patients, the real danger isn't underfitting; it's a model quietly memorizing individual patients' signal signatures and reporting inflated accuracy that has nothing to do with generalizing to a new patient. So the outer evaluation loop is <strong>leave-one-subject-out</strong>, not leave-one-epoch-out. Every epoch from a held-out patient is invisible during that patient's test fold.</p>
     <figure class="shot">
       <img src="img/cvloop.png" alt="Nested cross-validation diagram: outer leave-one-subject-out loop for classification, inner 5-fold loop for hyperparameter tuning" />
       <figcaption>Nested CV: the outer loop holds out one subject at a time for classification, while an inner 5-fold loop (3-fold for LR) tunes hyperparameters on the remaining subjects only, so no held-out patient ever leaks into tuning either.</figcaption>
     </figure>
     <ul>
-      <li>Two classifiers: Random Forest (captures non-linear feature interactions) and L1-regularized Logistic Regression (linear, and the L1 term doubles as feature selection).</li>
+      <li>Two classifiers: Random Forest (captures non-linear feature interactions) and L1-regularized Logistic Regression (able to capture linearities more).</li>
       <li>Hyperparameter tuning happens strictly inside the inner fold (Stratified Group K-Fold: 5-fold for RF, 3-fold for LR), so no patient ever leaks across the inner train/validation split either.</li>
       <li>Class imbalance (239 responder vs. 136 non-responder epochs) handled via balanced-subsample weighting rather than resampling.</li>
-      <li>Because epochs from the same patient aren't independent samples, treating them as if they were would understate the real uncertainty. So confidence bands come from 50 rounds of <strong>subject-level</strong> bootstrap resampling, not epoch-level.</li>
+      <li>Because epochs from the same patient aren't independent samples, treating them as if they were would understate the real uncertainty. So confidence bands come from 50 rounds of subject-level bootstrap resampling, not epoch-level.</li>
       <li>SHAP for interpretability on the tree-based model, plus an N-feature sweep (subsets of size 1&ndash;20, ranked by SHAP importance) to find where performance actually saturates.</li>
     </ul>
 
@@ -116,7 +120,7 @@
       <tr><td>Random Forest, right hemisphere only</td><td class="num">0.60 &plusmn; 0.08</td></tr>
     </table>
     <p>The feature-count sweep peaks in a narrow band (six to eight features) before performance flattens or degrades. Past that point, additional features add noise rather than signal, which argues for a compact, clinically legible biomarker panel rather than throwing the whole feature set at the problem.</p>
-    <p>SHAP converged on the same handful of features from a different direction: right-hemisphere aperiodic slope, right-hemisphere delta and theta bandpower, and left-hemisphere beta bandpower carried the most weight. A Mann-Whitney U test on the visit-level data confirmed all four differ significantly between responders and non-responders (p &lt; 0.05). The SHAP ranking and classical hypothesis testing agree, which is reassuring given how easy it is for an attribution method to find "importance" in noise.</p>
+    <p>SHAP converged on the same handful of features from a different direction. Right-hemisphere aperiodic slope, right-hemisphere delta and theta bandpower, and left-hemisphere beta bandpower carried the most weight. A Mann-Whitney U test on the visit-level data both confirmed all four differ significantly between responders and non-responders (p &lt; 0.05). The SHAP ranking and classical hypothesis testing agree, which is reassuring given how easy it is for an attribution method to find "importance" in noise.</p>
     <figure class="shot">
       <img src="img/shap-beeswarm.png" alt="SHAP beeswarm plot ranking features by impact on model output, led by right-hemisphere aperiodic slope, right delta and theta power, and left beta power" />
       <figcaption>SHAP beeswarm, Random Forest: right-hemisphere aperiodic slope and delta/theta power, plus left-hemisphere beta power, dominate the ranking. Color is feature value; position is impact on predicted responder probability.</figcaption>
@@ -128,19 +132,19 @@
       <img src="img/roc-lateralization.png" alt="Logistic Regression ROC curves comparing left hemisphere (AUC 0.57) versus right hemisphere (AUC 0.67) features" />
       <figcaption>Logistic Regression, hemisphere-restricted feature sets: left (AUC 0.57) vs. right (AUC 0.67). The right-hemisphere-only model beats every configuration in the table above, including combined-hemisphere Random Forest.</figcaption>
     </figure>
-    <p>Classical models of generalized epilepsy assume roughly bilateral involvement, so a hemisphere-specific signal wasn't the hypothesis going in. It does track with more recent work suggesting generalized epilepsy is shaped by distinct, lateralized cortical networks rather than a uniform bilateral process, and with Pizarro et al.'s finding that asymmetry in generalized discharges behaves like a stable, patient-specific trait rather than noise. I'm treating it exactly as that kind of evidence: suggestive, not settled. Distinguishing "this reflects fixed, patient-specific network topology" from "this is a bias in how this particular cohort's electrodes happened to be placed" needs a larger, longitudinal cohort than 33 patients can give.</p>
+    <p>Classical models of generalized epilepsy assume roughly bilateral involvement, so a hemisphere-specific signal wasn't the hypothesis going in. It does track with more recent work suggesting generalized epilepsy is shaped by distinct, lateralized cortical networks rather than a uniform bilateral process, and with Pizarro et al.'s finding that asymmetry in generalized discharges behaves like a stable, patient-specific trait rather than noise. However, this is suggestive, not settled. Distinguishing "this reflects fixed, patient-specific network topology" from "this is a bias in how this particular cohort's electrodes happened to be placed" needs a larger, longitudinal cohort than 33 patients can give.</p>
 
     <h2>Why the aperiodic slope, specifically</h2>
-    <p>Of every feature engineered, the aperiodic (1/f) slope carried the most SHAP weight, and higher right-hemisphere slope values pushed predictions toward non-responder. The aperiodic exponent is thought to track the excitation/inhibition ratio of the underlying neural population: not an oscillation you can point to on a spectrogram, but the broadband shape underneath it. That gives the top feature a plausible mechanistic story, not just a statistical one: if responders and non-responders differ systematically in thalamic network excitability, that's the kind of difference DBS parameter tuning would actually want to know about, and it lines up with independent reports linking aperiodic-activity shifts to seizure reduction under neuromodulation.</p>
+    <p>Of every feature engineered, the aperiodic (1/f) slope carried the most SHAP weight, and higher right-hemisphere slope values pushed predictions toward non-responder. The aperiodic exponent is thought to track the excitation/inhibition ratio of the underlying neural population: not an oscillation you can point to on a spectrogram, but the broadband shape underneath it. That gives the top feature a plausible mechanistic story, not just a statistical one. If responders and non-responders differ systematically in thalamic network excitability, that's the kind of difference DBS parameter tuning would actually want to know about, and it lines up with other papers linking aperiodic-activity shifts to seizure reduction under neuromodulation.</p>
 
     <h2>Honest limitations</h2>
-    <p>Thirty-three patients with implanted-device LFP is, as far as I can tell, the largest cohort of its kind reported for this question, and it's still a modest N for a field that considers AUC &gt; 0.8 the bar for a "good" diagnostic biomarker. That benchmark, though, is mostly set by an easier task: separating diagnosed patients from healthy controls. Predictive/response biomarkers (will this treatment work for this already-diagnosed patient?) are a much rarer, harder category in the literature, and 0.65&ndash;0.67 sits in a genuinely useful range for a first pass at that question, not a failure to hit an unrelated bar.</p>
+    <p>Thirty-three patients with implanted-device LFP is, as far as I can tell, the largest cohort of its kind reported for this question, and it's still a modest N for a field that considers AUC &gt; 0.8 the bar for a "good" diagnostic biomarker. That benchmark, though, is mostly set by an easier task: separating diagnosed patients from healthy controls. Predictive/response biomarkers (will this treatment work for this already-diagnosed patient?) are a much rarer, harder category in the literature, and 0.65&ndash;0.67 sits in a useful and exploratory range for a first pass at that question, not a failure to hit an unrelated bar.</p>
     <p>The uneven visits-per-patient split adds real heterogeneity, and sliding-window augmentation buys epoch count without substituting for more independent patients. The lateralization result, as above, is an empirical pattern in this dataset that needs replication before I'd treat it as a stable biological claim rather than a promising lead.</p>
 
     <h2>Where this goes</h2>
-    <p>Two directions follow directly: scale data collection toward a cohort large enough to properly test the lateralization hypothesis, and move from engineered spectral/aperiodic features toward interpretable deep learning that can capture spatiotemporal LFP dynamics those hand-built features necessarily flatten. The long-term target is integrating a validated biomarker into a real-time, closed-loop DBS system: one that adjusts stimulation based on the patient's own signal instead of a clinician's best guess between visits.</p>
+    <p>Two directions to follow: scale data collection toward a cohort large enough to properly test the lateralization hypothesis, and move from engineered spectral/aperiodic features toward interpretable deep learning that can capture spatiotemporal LFP dynamics those hand-built features necessarily flatten. The long-term target is integrating a validated biomarker into a real-time, closed-loop DBS system, one that adjusts stimulation based on the patient's own signal instead of a clinician's best guess between visits.</p>
 
-    <p class="source-note">Submitted to the 2026 IEEE International Workshop on Machine Learning for Signal Processing (MLSP), Atlanta (currently under double-blind review). Aperiodic-slope parameterization via FOOOF (Donoghue et al., 2020); interpretability via SHAP (Lundberg et al., 2020); lateralization context from Pizarro, Walker &amp; Sheybani (2025) and related work on aperiodic activity as a seizure/neuromodulation biomarker (Gregg et al., 2024; Satzer et al., 2025).</p>
+    <p class="source-note">Submitted to IEEE Machine Learning for Signal Processing (MLSP) Conference. Aperiodic-slope parameterization via FOOOF (Donoghue et al., 2020); interpretability via SHAP (Lundberg et al., 2020); lateralization context from Pizarro, Walker &amp; Sheybani (2025) and related work on aperiodic activity as a seizure/neuromodulation biomarker (Gregg et al., 2024; Satzer et al., 2025).</p>
   </main>
 
   <footer class="foot"><a href="../../index.html">&larr; Back to the network</a></footer>
