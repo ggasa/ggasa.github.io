@@ -90,7 +90,7 @@
       <li><strong>What model is one using?</strong></li>
       <li><strong>What framework is one using?</strong></li>
     </ol>
-    <p>Although, Rasheed et al.'s 2026 study on comparing agentic frameworks for reasoning tasks (three benchmarks: BBH, GSM8K, ARC) revealed that framework choice should be driven by memory management, failure handling and cost control, not accuracy - as most frameworks achieved very similar overall performance. This is why I chose to use LangChain, for a budget friendliness and implementing reflexion as a loop.</p>
+    <p>Note: Rasheed et al.'s 2026 study on comparing agentic frameworks for reasoning tasks (three benchmarks: BBH, GSM8K, ARC) revealed that framework choice should be driven by memory management, failure handling and cost control, not accuracy - as most frameworks achieved very similar overall performance. This is why I chose to use LangChain, for its budget friendliness and implementing reflexion as a loop.</p>
 
     <h2>Structure of A.C.E.S</h2>
     <div class="diagram-solo">
@@ -222,11 +222,11 @@
       </figure>
     </div>
 
-    <p>Indicator, Pattern, and Trend don't depend on each other's output — only the Decision Maker needs all three. Also, I checked the original paper's repo and actually found out that their agents are not dependent on each other's output except for the decision making agent thus parallel structure shouldn't hurt. One could argue that CoT(Chain of Thought)-like structure could provide better outcomes but in reality I think the conformity can actually harm the agents. So I'm going to stick to the parallel structure unless the test results say otherwise. The parallel design cuts end-to-end latency by roughly <strong>28%</strong>, with no change to what any individual agent sees or does. Same four specialists, same prompts — just no longer waiting in line.</p>
+    <p>Indicator, Pattern, and Trend don't depend on each other's output — only the Decision Maker needs all three. Also, I checked the original paper's repo and actually found out that their agents are not dependent on each other's output except for the decision making agent thus parallel structure shouldn't hurt. One could argue that CoT(Chain of Thought)-like structure could provide better outcomes but in reality I think the conformity can actually harm the agents. So I'm going to stick to the parallel structure unless the test results say otherwise. The parallel design cuts end-to-end latency by roughly <strong>28%</strong>, with no change to what any individual agent sees or does.</p>
     <p>It's also worth noting that the original QuantAgent paper never explains the sequential choice.</p>
 
     <h2>Validating the best model+framework for A.C.E.S</h2>
-    <p>The trap here is obvious in hindsight: if you swap both the model <em>and</em> the architecture at once and the numbers change, you've learned nothing about which one caused it. So the whole study is sequenced to isolate exactly one variable per phase:</p>
+    <p>If you swap both the model <em>and</em> the architecture at once and the numbers change, you've learned nothing about which one caused it. So the whole testing is sequenced to isolate exactly one variable per phase:</p>
 
     <figure>
       <svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram of the experiment plan: phase 0 and phase 1 on the top row, phase 2 below. Phase 0 (target icon) establishes a baseline: a repeatability check and a parallel-versus-series architecture shootout. Phase 1 (chip icon) compares models with architecture held constant (padlock icon). Phase 2 (node-graph icon) compares architectures with model held constant (padlock icon).">
@@ -358,7 +358,7 @@
       </svg>
     </figure>
 
-    <h2>Criteria for choosing</h2>
+    <h2>Choosing my LLMs</h2>
 
     <h3><span class="roman">I.</span>Price &amp; token economics</h3>
     <p>Every decision is four real model calls, and two of them look at an image — vision tokens aren't free. Here's where the three models actually sit, per million tokens:</p>
@@ -369,7 +369,8 @@
       <tr class="highlight"><td class="modelname">MiniMax-M3</td><td class="num">$0.30</td><td class="num">$1.20</td><td>candidate — all four stages</td></tr>
     </table>
     <p>The output-price gap is the interesting part: Gemini's $3.00/M output is currently carrying both vision stages in the baseline mix. Worth being precise about what that figure actually is — Gemini 3 Flash Preview's own pricing lists one input rate covering text, image, and video alike ($0.50/M) and a single output rate ($3.00/M), because this model only ever writes text back; it doesn't generate images, so there's no separate "image price" being paid here. The rate itself doesn't care whether the input was a chart or a sentence — what actually drives cost is how many tokens the chart tokenizes into, not a higher per-token charge for looking at it. If MiniMax-M3 can read the same charts competently, the two most expensive calls in the whole pipeline get a lot cheaper — that's a real, quantifiable incentive to switch, <em>if</em> it holds up under criterion two. MiniMax's rate is also a standing 50% promotional cut off its own list price, which is its own note to self: don't build a permanent cost model on a promotional number.</p>
-    <p>That list pricing shows up in independent measurement too. Artificial Analysis's per-task cost figures (actual observed spend, not sticker price) put DeepSeek V4 Pro as the cheapest model in its intelligence-benchmark comparison set at <strong>$0.04/task</strong>, with MiniMax-M3 at $0.12/task — both well below the frontier models they're being weighed against. The gap holds on coding-agent tasks too, where DeepSeek V4 Pro came in at $0.27/task against $2&ndash;12+ for the frontier options in that comparison.</p>
+
+    <p>That list pricing shows up in independent measurement too. Artificial Analysis's per-task cost figures (actual observed spend, not sticker price) put DeepSeek V4 Pro as the cheapest model in its intelligence-benchmark comparison set at $0.04/task, with MiniMax-M3 at $0.12/task — both well below the frontier models they're being weighed against. The gap holds on coding-agent tasks too, where DeepSeek V4 Pro came in at $0.27/task against $2&ndash;12+ for the frontier options in that comparison.</p>
     <p class="source-note">Pricing as researched during this write-up — see <a href="https://openrouter.ai/minimax/minimax-m3" target="_blank" rel="noopener">MiniMax M3</a>, <a href="https://openrouter.ai/deepseek/deepseek-v4-pro" target="_blank" rel="noopener">DeepSeek V4 Pro</a>, and <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Gemini API pricing</a> for list rates; <a href="https://artificialanalysis.ai/models" target="_blank" rel="noopener">Artificial Analysis's model comparison</a> and <a href="https://artificialanalysis.ai/agents/coding-agents" target="_blank" rel="noopener">coding-agent benchmarks</a> for measured cost-per-task.</p>
 
     <h3><span class="roman">II.</span>Capability (Intelligence)</h3>
