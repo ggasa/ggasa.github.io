@@ -38,12 +38,6 @@
     .diagram-pair .dcap .metric { color: var(--accent-ink); font-weight: 700; text-transform: none; }
     .diagram-pair svg { width: 100%; height: auto; display: block; }
     .diagram-pair figcaption { margin-top: 0.7rem; font-size: 0.86rem; color: var(--ink-dim); text-align: left; font-style: italic; }
-    .landscape-legend { margin-top: 0.9rem; font-size: 0.82rem; color: var(--ink-dim); display: flex; flex-wrap: wrap; gap: 0.5rem 1.2rem; }
-    .landscape-legend .dot-key { display: inline-flex; align-items: center; gap: 0.35em; }
-    .landscape-legend .dk { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-    .landscape-legend .dk.full { background: var(--up); }
-    .landscape-legend .dk.half { background: var(--muted); opacity: 0.55; }
-    .landscape-legend .dk.empty { border: 1px solid var(--muted); }
     table.pricing td.num, table.pricing th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
     table.pricing tr.highlight td { background: rgba(52, 211, 153, 0.07); }
     table.pricing .modelname { font-weight: 650; color: var(--ink); }
@@ -90,7 +84,15 @@
     <h2>Why I built this</h2>
     <p>I've traded enough on my own to achieve some level of profit, now that I have traded for over a few years. I still don't know a lot about trading but at least I can testify with my revenue rate, which is above X% from my baseline at the moment. However, this was to experiment and get myself used to trading so the amount of seed used was very small. Recently, AI and espeically LLMs have been changing the world in almost every domain. I got curious about automated trading with AI agents and started looking into Agentic AI systems. I wanted to test whether a multi-agent system built to read the market can arrive at a decision to automate trading so one could earn profits without governing and hovering over the system to make deicions. And if so, how can one achieve the best possible profit and maximize their revenue?</p>
 
-    <h2>Four specialists, one verdict</h2>
+    <h2>Which factors can affect the performance greatly</h2>
+    <p>We can all agree that from the pareto principle that 20% of the core changes can lead to 80% of the performance. In agentic AI systems what could be those 20%? I thought these following factors were based on researching and learning about agentic AI systems:</p>
+    <ol>
+      <li><strong>What model is one using?</strong></li>
+      <li><strong>What framework is one using?</strong></li>
+    </ol>
+    <p>Although, Rasheed et al.'s 2026 study on comparing agentic frameworks for reasoning tasks (three benchmarks: BBH, GSM8K, ARC) revealed that framework choice should be driven by memory management, failure handling and cost control, not accuracy - as most frameworks acheived versy similar overall performance. This is why I chose to use LangChain, for a budget friendliness and implementing reflexion as a loop.</p>
+
+    <h2>Structure of A.C.E.S</h2>
     <div class="diagram-solo">
       <figure>
         <div class="dcap"><span>before</span></div>
@@ -176,7 +178,7 @@
 
     <div class="diagram-solo">
       <figure>
-        <div class="dcap"><span>after — this project, main branch</span><span class="metric">&minus;28% latency</span></div>
+        <div class="dcap"><span>after</span><span class="metric">&minus; -28% latency</span></div>
         <svg viewBox="0 0 640 310" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Parallel diagram: START fans out to Indicator, Pattern, and Trend agents simultaneously, which all feed into Decision Maker, then END.">
           <defs>
             <marker id="arrowA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -220,14 +222,14 @@
       </figure>
     </div>
 
-    <p>Indicator, Pattern, and Trend don't depend on each other's output — only the Decision Maker needs all three. Restructuring the graph so they fan out from <code>START</code> simultaneously instead of chaining sequentially cut end-to-end latency by roughly <strong>28%</strong>, with no change to what any individual agent sees or does. Same four specialists, same prompts — just no longer waiting in line.</p>
-    <p>Worth noting honestly: the QuantAgent paper never explains the sequential choice — I read through the full paper specifically checking for this, and "parallel," "sequential," "concurrent," and "simultaneously" don't appear in it in this context at all. The paper repeatedly frames low latency as a core motivation for the whole approach, which makes the sequential default a bit of a missed opportunity rather than a considered tradeoff — three independent reads with nothing to wait on each other for is about as free a latency win as this kind of system gets.</p>
+    <p>Indicator, Pattern, and Trend don't depend on each other's output — only the Decision Maker needs all three. Also, I checked the original paper's repo and actually found out that their agents are not dependent on each other's output except for the decision making agent thus parallel structure shouldn't hurt. One could argue that CoT(Chain of Thought)-like structure could provide better outcomes but in reality I think the conformity can actually harm the agents. So I'm going to stick to the parallel structure unless the test results say otherwise. The parallel design cuts end-to-end latency by roughly <strong>28%</strong>, with no change to what any individual agent sees or does. Same four specialists, same prompts — just no longer waiting in line.</p>
+    <p>It's also worth noting that the original QuantAgent paper never explains the sequential choice.</p>
 
-    <h2>One variable at a time, or the result means nothing</h2>
+    <h2>Validating the best model+framework for A.C.E.S</h2>
     <p>The trap here is obvious in hindsight: if you swap both the model <em>and</em> the architecture at once and the numbers change, you've learned nothing about which one caused it. So the whole study is sequenced to isolate exactly one variable per phase:</p>
 
     <figure>
-      <svg viewBox="0 0 700 565" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram of the five-phase experiment plan, arranged as phase 0 and phase 1 on the top row, phase 2 and phase 3 on the second row, and phase 4 alone at the bottom as the concluding step, connected by arrows. Phase 0 (target icon) establishes a baseline: a repeatability check and a parallel-versus-series architecture shootout. Phase 1 (chip icon) compares models with architecture held constant (padlock icon). Phase 2 (node-graph icon) compares architectures with model held constant (padlock icon). Phase 3 (dial icon) re-optimizes the winning architecture per model. Phase 4 (overlapping-circles icon) checks whether model and architecture interact, by re-testing the swap on the second-best architecture.">
+      <svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram of the experiment plan: phase 0 and phase 1 on the top row, phase 2 below. Phase 0 (target icon) establishes a baseline: a repeatability check and a parallel-versus-series architecture shootout. Phase 1 (chip icon) compares models with architecture held constant (padlock icon). Phase 2 (node-graph icon) compares architectures with model held constant (padlock icon).">
         <defs>
           <marker id="arrowP" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
             <path d="M0,0 L10,5 L0,10 z" fill="var(--rule)"></path>
@@ -303,8 +305,6 @@
           <!-- connectors: straight within a row, right-angle "elbow" between rows -->
           <line x1="330" y1="95" x2="368" y2="95" stroke="var(--rule)" stroke-width="1.3" marker-end="url(#arrowP)"></line>
           <path d="M525,170 V185 H175 V208" fill="none" stroke="var(--rule)" stroke-width="1.3" marker-end="url(#arrowP)"></path>
-          <line x1="330" y1="285" x2="368" y2="285" stroke="var(--rule)" stroke-width="1.3" marker-end="url(#arrowP)"></line>
-          <path d="M525,360 V378 H350 V398" fill="none" stroke="var(--rule)" stroke-width="1.3" marker-end="url(#arrowP)"></path>
 
           <!-- PHASE 0 — establishing the baseline -->
           <g>
@@ -354,28 +354,6 @@
             <use href="#icon-lock" transform="translate(36,328) scale(0.65)"></use>
             <text x="58" y="339" fill="var(--ink-dim)" font-size="9.5" font-style="italic">model held fixed</text>
           </g>
-
-          <!-- PHASE 3 — re-optimize the winner -->
-          <g>
-            <rect x="370" y="210" width="310" height="150" rx="5" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
-            <use href="#icon-dial" transform="translate(386,224)"></use>
-            <text x="420" y="240" fill="var(--ink)" font-size="12.5" font-weight="700">PHASE 3</text>
-            <line x1="386" y1="258" x2="664" y2="258" stroke="var(--ink-soft)" stroke-width="1" opacity="0.3"></line>
-            <text x="386" y="285" fill="var(--ink)" font-size="11.5" font-weight="600">Re-sweep</text>
-            <text x="386" y="300" fill="var(--ink-soft)" font-size="10">Re-optimize the winning</text>
-            <text x="386" y="313" fill="var(--ink-soft)" font-size="10">architecture, per model</text>
-          </g>
-
-          <!-- PHASE 4 — the payoff: do the two variables interact? -->
-          <g>
-            <rect x="195" y="400" width="310" height="150" rx="5" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
-            <use href="#icon-venn" transform="translate(211,414)"></use>
-            <text x="245" y="430" fill="var(--ink)" font-size="12.5" font-weight="700">PHASE 4</text>
-            <line x1="211" y1="448" x2="489" y2="448" stroke="var(--ink-soft)" stroke-width="1" opacity="0.3"></line>
-            <text x="211" y="468" fill="var(--ink)" font-size="11.5" font-weight="600">Interaction check</text>
-            <text x="211" y="483" fill="var(--ink-soft)" font-size="10">Re-test the swap on the</text>
-            <text x="211" y="497" fill="var(--ink-soft)" font-size="10">2nd-best arch. &mdash; ranking flip?</text>
-          </g>
         </g>
       </svg>
     </figure>
@@ -384,11 +362,9 @@
       <li><strong>Phase 0 — Baseline &amp; repeatability</strong> <em>(done)</em>. Two checks over the same week: five identical runs of the current parallel model mix, to see how much a single model's own results move around on nothing but ordinary LLM nondeterminism before that noise gets mistaken for a real signal later — and a head-to-head between that parallel baseline and the original QuantAgent series pipeline running its original prompt, so the series-vs-parallel question gets measured, not assumed, before any phase that follows builds on it.</li>
       <li><strong>Phase 1 — Model, architecture held constant</strong> <em>(in progress)</em>. DeepSeek + Gemini vs. all-MiniMax-M3, both on the same LangGraph pipeline, same window, five replicates each.</li>
       <li><strong>Phase 2 — Architecture, model held constant</strong> <em>(pending)</em>. Whichever model wins Phase 1, tested across all four architectures. Each one now runs its own full pipeline independently — nobody reuses another system's analysis, so cost and latency are honestly comparable, not just decision quality.</li>
-      <li><strong>Phase 3 &amp; 4 — Re-sweep, then check for interaction</strong> <em>(pending)</em>. Re-optimize the winning architecture per model, then re-run the model swap on the second-best architecture — if the ranking flips, model and architecture interact, and the one-at-a-time result alone would have been misleading.</li>
     </ol>
 
-    <h2>What "better" has to mean before I trust it</h2>
-    <p>Phase 1 is where I decide between the current mix and MiniMax-M3. I set three criteria before running anything, specifically so I couldn't quietly move the goalposts once I saw numbers I liked.</p>
+    <h2>Criterias for choosing</h2>
 
     <h3><span class="roman">I.</span>Price &amp; token economics</h3>
     <p>Every decision is four real model calls, and two of them look at an image — vision tokens aren't free. Here's where the three models actually sit, per million tokens:</p>
@@ -402,9 +378,10 @@
     <p>That list pricing shows up in independent measurement too. Artificial Analysis's per-task cost figures (actual observed spend, not sticker price) put DeepSeek V4 Pro as the cheapest model in its intelligence-benchmark comparison set at <strong>$0.04/task</strong>, with MiniMax-M3 at $0.12/task — both well below the frontier models they're being weighed against. The gap holds on coding-agent tasks too, where DeepSeek V4 Pro came in at $0.27/task against $2&ndash;12+ for the frontier options in that comparison.</p>
     <p class="source-note">Pricing as researched during this write-up — see <a href="https://openrouter.ai/minimax/minimax-m3" target="_blank" rel="noopener">MiniMax M3</a>, <a href="https://openrouter.ai/deepseek/deepseek-v4-pro" target="_blank" rel="noopener">DeepSeek V4 Pro</a>, and <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Gemini API pricing</a> for list rates; <a href="https://artificialanalysis.ai/models" target="_blank" rel="noopener">Artificial Analysis's model comparison</a> and <a href="https://artificialanalysis.ai/agents/coding-agents" target="_blank" rel="noopener">coding-agent benchmarks</a> for measured cost-per-task.</p>
 
-    <h3><span class="roman">II.</span>Capability, measured where it counts</h3>
-    <p>I started with Artificial Analysis's Intelligence Index — a composite across nine evals including GPQA Diamond, Humanity's Last Exam, and MMMU-Pro for visual reasoning, so multimodal capability is already part of what it's measuring, not something I had to check separately. On that index, DeepSeek V4 Pro and MiniMax-M3 land <strong>tied at 44</strong>. That tie is exactly why this can't be settled by leaderboard alone — general intelligence says "toss-up," which is a real finding, not a non-answer, and it's the reason Phase 1 has to run at all rather than being decided from a chart on someone else's website.</p>
-    <p>Where it stops being a toss-up is on a benchmark closer to the actual job. Vals AI's Finance Agent v2 — entry-level financial-analyst tasks against real filings — has MiniMax-M3 at <strong>48.27%</strong> (rank 17 of 40 models tested) against DeepSeek V4 at <strong>44.08%</strong> (rank 24 of 40), with MiniMax-M3 also costing about a third as much per test and running roughly 3x faster on that benchmark. Tied on general intelligence, ahead on the closest available proxy for this task, and cheaper doing it — that's a real reason to take MiniMax-M3 seriously as more than a cost play, not just a hunch.</p>
+    <h3><span class="roman">II.</span>Capability (Intelligence)</h3>
+    <p>I started with Artificial Analysis's Intelligence Index — a composite across nine evals including GPQA Diamond, Humanity's Last Exam, and MMMU-Pro for visual reasoning, so multimodal capability is already part of what it's measuring, not something I had to check separately. On that index, DeepSeek V4 Pro on and MiniMax-M3 land <strong>tied at value of 44</strong>.They are both within top 15. However, the tie is exactly why this can't be settled by leaderboard alone. </p>
+    <p>I thought this would be a good place to have a benchmark closer to the finance domain. Vals AI's Finance Agent v2 — entry-level financial-analyst tasks against real filings — has MiniMax-M3 at <strong>48.27%</strong> (rank 17 of 40 models tested) against DeepSeek V4 at <strong>44.08%</strong> (rank 24 of 40), with MiniMax-M3 also costing about a third as much per test and running roughly 3x faster on that benchmark. Tied on general intelligence, ahead on the closest available proxy for this task, and cheaper doing it. That's another reason to take MiniMax-M3.
+
     <p class="source-note">Sources: <a href="https://artificialanalysis.ai/models" target="_blank" rel="noopener">Artificial Analysis Intelligence Index</a>; <a href="https://www.vals.ai/benchmarks/fabv2" target="_blank" rel="noopener">Vals AI Finance Agent v2</a>.</p>
 
     <h3><span class="roman">III.</span>Hallucination &amp; inconsistency</h3>
@@ -414,11 +391,11 @@
     <blockquote>A hallucination or consistency finding from a prior model generation doesn't transfer to the next one — treating it like it does is exactly the kind of shortcut this whole project is trying not to take, and the M2.7-to-M3 jump is the proof it isn't a hypothetical risk.</blockquote>
     <p class="source-note">Source: <a href="https://www.vals.ai/benchmarks/fabv2" target="_blank" rel="noopener">Vals AI Finance Agent v2</a> — MiniMax-M3 vs. MiniMax-M2.7.</p>
 
-    <h2>Why not the other six</h2>
-    <p>Agent frameworks split roughly into four families. Before narrowing to what's actually in Phase 2, it's worth showing the full board — and being honest about which of these nine I've tested versus which I'm characterizing from well-documented, known architecture alone.</p>
+    <h2>Choosing my frameworks</h2>
+    <p>Agent frameworks split roughly into four families. Before narrowing to what's actually in Phase 2, it's worth showing the full board and being honest about which of these I''m planning to test.</p>
 
     <figure>
-      <svg viewBox="0 0 960 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tree diagram of agent frameworks grouped into State Machine, Conversational, Optimizer, and Autonomous families, each leaf scored on cost efficiency, fit for this task, and consistency safeguard.">
+      <svg viewBox="0 0 960 195" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tree diagram of agent frameworks grouped into State Machine, Conversational, Optimizer, and Autonomous families, with the three frameworks used in this project highlighted.">
         <defs>
           <marker id="arrowL" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
             <path d="M0,0 L10,5 L0,10 z" fill="var(--rule)"></path>
@@ -469,110 +446,59 @@
           <line x1="792" y1="98" x2="895" y2="133" stroke="var(--rule)" stroke-width="1.1"></line>
 
           <g>
-            <rect x="8" y="135" width="95" height="60" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"></rect>
-            <use href="#icon-langgraph" transform="translate(17,142) scale(0.542)"></use>
-            <text x="63" y="152" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">LangGraph</text>
-            <text x="55" y="164" text-anchor="middle" fill="var(--accent-ink)" font-size="8.5">used here</text>
-            <circle cx="41" cy="180" r="4" fill="var(--up)"></circle>
-            <circle cx="55" cy="180" r="4" fill="var(--up)"></circle>
-            <circle cx="69" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <rect x="8" y="135" width="95" height="42" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"></rect>
+            <use href="#icon-langgraph" transform="translate(17,141) scale(0.542)"></use>
+            <text x="63" y="151" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">LangGraph</text>
+            <text x="55" y="165" text-anchor="middle" fill="var(--accent-ink)" font-size="8.5">used here</text>
           </g>
           <g>
-            <rect x="113" y="135" width="95" height="60" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"></rect>
-            <use href="#icon-autogen" transform="translate(129,142) scale(0.542)"></use>
-            <text x="168" y="152" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">AutoGen</text>
-            <text x="160" y="164" text-anchor="middle" fill="var(--accent-ink)" font-size="8.5">used here</text>
-            <circle cx="146" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
-            <circle cx="160" cy="180" r="4" fill="var(--up)"></circle>
-            <circle cx="174" cy="180" r="4" fill="var(--up)"></circle>
+            <rect x="113" y="135" width="95" height="42" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"></rect>
+            <use href="#icon-autogen" transform="translate(129,141) scale(0.542)"></use>
+            <text x="168" y="151" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">AutoGen</text>
+            <text x="160" y="165" text-anchor="middle" fill="var(--accent-ink)" font-size="8.5">used here</text>
           </g>
           <g>
-            <rect x="218" y="135" width="95" height="60" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
-            <text x="265" y="156" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">CrewAI</text>
-            <circle cx="251" cy="180" r="4" fill="var(--muted)" opacity="0.55"></circle>
-            <circle cx="265" cy="180" r="4" fill="var(--muted)" opacity="0.55"></circle>
-            <circle cx="279" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <rect x="218" y="135" width="95" height="42" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
+            <text x="265" y="161" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">CrewAI</text>
           </g>
           <g>
-            <rect x="323" y="135" width="95" height="60" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
-            <text x="370" y="156" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">MetaGPT</text>
-            <circle cx="356" cy="180" r="4" fill="var(--muted)" opacity="0.55"></circle>
-            <circle cx="370" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
-            <circle cx="384" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <rect x="323" y="135" width="95" height="42" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
+            <text x="370" y="161" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">MetaGPT</text>
           </g>
           <g>
-            <rect x="428" y="135" width="95" height="60" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
-            <text x="475" y="156" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">CAMEL</text>
-            <circle cx="461" cy="180" r="4" fill="var(--muted)" opacity="0.55"></circle>
-            <circle cx="475" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
-            <circle cx="489" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <rect x="428" y="135" width="95" height="42" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
+            <text x="475" y="161" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">CAMEL</text>
           </g>
           <g>
-            <rect x="533" y="135" width="95" height="60" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"></rect>
-            <use href="#icon-dspy" transform="translate(559,142) scale(0.542)"></use>
-            <text x="588" y="152" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">DSPy</text>
-            <text x="580" y="164" text-anchor="middle" fill="var(--accent-ink)" font-size="8.5">used here</text>
-            <circle cx="566" cy="180" r="4" fill="var(--up)"></circle>
-            <circle cx="580" cy="180" r="4" fill="var(--up)"></circle>
-            <circle cx="594" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <rect x="533" y="135" width="95" height="42" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"></rect>
+            <use href="#icon-dspy" transform="translate(559,141) scale(0.542)"></use>
+            <text x="588" y="151" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">DSPy</text>
+            <text x="580" y="165" text-anchor="middle" fill="var(--accent-ink)" font-size="8.5">used here</text>
           </g>
           <g>
-            <rect x="638" y="135" width="95" height="60" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
-            <text x="685" y="156" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">AutoGPT</text>
-            <circle cx="671" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
-            <circle cx="685" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
-            <circle cx="699" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <rect x="638" y="135" width="95" height="42" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
+            <text x="685" y="161" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">AutoGPT</text>
           </g>
           <g>
-            <rect x="743" y="135" width="95" height="60" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
-            <text x="790" y="156" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">BabyAGI</text>
-            <circle cx="776" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
-            <circle cx="790" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
-            <circle cx="804" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <rect x="743" y="135" width="95" height="42" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
+            <text x="790" y="161" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">BabyAGI</text>
           </g>
           <g>
-            <rect x="848" y="135" width="95" height="60" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
-            <text x="895" y="156" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">SuperAGI</text>
-            <circle cx="881" cy="180" r="4" fill="var(--muted)" opacity="0.55"></circle>
-            <circle cx="895" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
-            <circle cx="909" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
+            <rect x="848" y="135" width="95" height="42" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.1"></rect>
+            <text x="895" y="161" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">SuperAGI</text>
           </g>
         </g>
       </svg>
-      <figcaption>
-        <div class="landscape-legend">
-          <span><strong>Dots, left to right:</strong> cost efficiency &middot; fit for a bounded, structured decision &middot; built-in consistency safeguard</span>
-          <span class="dot-key"><span class="dk full"></span>favorable</span>
-          <span class="dot-key"><span class="dk half"></span>mixed / moderate</span>
-          <span class="dot-key"><span class="dk empty"></span>weak or absent</span>
-        </div>
-      </figcaption>
     </figure>
 
-    <p>The highlighted three are the only ones I've actually run against this task — everything else is scored on well-documented default architecture, not a benchmark I ran, and I'm not pretending otherwise. MetaGPT and AutoGPT specifically were considered and rejected early: MetaGPT is a fixed, software-company-style SOP pipeline — not built for a single recurring trading call — and AutoGPT's open-ended, unbounded task loops are exactly the kind of uncontrolled autonomy a bounded, auditable decision shouldn't be handed to. CrewAI and CAMEL are genuine, capable role-based multi-agent frameworks; they simply were never in this project's actual comparison, so I'm not going to imply they were tested and came up short.</p>
-
-    <h2>Deferred on purpose</h2>
-    <p>I don't have a favorite architecture yet, and Phase 1 is specifically designed so I don't need one until the model question is settled first. Here's what's actually in the running for Phase 2:</p>
+    <p>Phase 1 is specifically designed so I don't need one until the model question is settled first. I suspect DSPy will perform the best with it's innate ability to CoT and reflect/feedback. Here are frameworks I think are worth testing for Phase 2:</p>
     <ul>
-      <li><strong>LangGraph</strong> — the original baseline. Three specialists in parallel, one decision node. No debate, no revision; whatever it decides first is final.</li>
-      <li><strong>AutoGen</strong> — the same three specialists as a moderated debate, each forced to state the strongest reason its own read could be wrong before a closing synthesizer rules.</li>
-      <li><strong>DSPy</strong> — structurally identical to the LangGraph baseline, but the prompts aren't hand-written — an optimizer searches for the instructions and few-shot examples that maximize realized R on a training window.</li>
+      <li><strong>LangGraph</strong> — the original baseline framework. This is chosen for it's token efficiency and expandability of complex decision making such as integrating reflexion for improving judgements.</li>
+      <li><strong>AutoGen</strong> — the same three specialists as a moderated debate, each forced to state the strongest reason its own read could be wrong before a closing synthesizer outputs the final decision.</li>
+      <li><strong>DSPy</strong> — structurally identical to the LangGraph baseline, but the prompts aren't hand-written — an optimizer searches for the instructions and few-shot examples that maximize profit.</li>
       <li><strong>LangGraph + Reflexion</strong> — the baseline plus one addition: a reflector critiques the decision against the same reversal failure mode and can send it back for a bounded number of revisions before it ships.</li>
     </ul>
-    <p>Worth being honest about: AutoGen's debate and the Reflexion variant are two different answers to the <em>same</em> diagnosed problem — dissent-by-design versus revise-on-critique. If one clearly outperforms the other in Phase 2, that's not just "framework A beat framework B," it's a real result about which failure-correction mechanism actually works better here.</p>
-
-    <h3>Reflexion, not LATS or plain self-refinement</h3>
-    <p>Self-critique loops aren't one idea, they're a small family, and I picked the middle of three real options:</p>
-    <ul>
-      <li><strong>Self-Refine</strong> — generate once, critique once, revise once — a single fixed pass, no memory of past attempts.</li>
-      <li><strong>Reflexion — chosen</strong> — generate, critique, and revise for a <em>bounded number of rounds</em>, with the critique from each round actually threaded into the next attempt.</li>
-      <li><strong>LATS</strong> — Monte Carlo tree search over multiple candidate decisions per step, each branch scored and expanded before one is chosen.</li>
-    </ul>
-    <p>LATS is the one I ruled out deliberately rather than by default, and the reason is specific to this task rather than a general knock on it. LATS earns its cost in domains with a real, cheap intermediate reward to search against — code that can be executed, a fact that can be checked against a retrieved source. A live trading decision has no such signal: you cannot know if LONG or SHORT was correct until real hours of price action actually pass, so there's nothing for the tree search to backpropagate against at decision time. Without that, LATS's branching reduces to repeated self-scoring across a wider, more expensive tree than Reflexion already does directly — likely several times the token cost per decision for a search advantage that depends on a reward signal this task doesn't have available synchronously. Self-Refine, on the other end, is a single fixed pass with no budget to escalate if the first critique isn't enough. Reflexion's bounded, memory-carrying loop was the deliberate middle: enough rounds to actually act on a critique, capped so cost stays predictable.</p>
-
-    <h2>Right now</h2>
-    <p>Phase 1 is running — five replicates of DeepSeek+Gemini and five of all-MiniMax-M3, same window, same architecture, hit-rate and net R compared once both sets finish, cost and latency captured throughout. This page will get the actual numbers when they exist; I'd rather ship the reasoning honestly incomplete than dress up a guess as a finding.</p>
-    <blockquote class="callout"><span class="head">Next up</span>Whichever model wins goes into Phase 2 — the four-architecture bake-off — with the model question already closed, so that comparison isn't confounded by anything but the architecture itself.</blockquote>
+    <p>Note: I'm highly skeptical of AutoGen's efficiency and performance here, especially with several studies noting debating doesn't necessarily lead to better performance and can lead to high cost.</p>
 
     <h2>Sources</h2>
     <ol>
