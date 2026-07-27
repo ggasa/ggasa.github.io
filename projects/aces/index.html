@@ -358,12 +358,6 @@
       </svg>
     </figure>
 
-    <ol>
-      <li><strong>Phase 0 — Baseline &amp; repeatability</strong> <em>(done)</em>. Two checks over the same week: five identical runs of the current parallel model mix, to see how much a single model's own results move around on nothing but ordinary LLM nondeterminism before that noise gets mistaken for a real signal later — and a head-to-head between that parallel baseline and the original QuantAgent series pipeline running its original prompt, so the series-vs-parallel question gets measured, not assumed, before any phase that follows builds on it.</li>
-      <li><strong>Phase 1 — Model, architecture held constant</strong> <em>(in progress)</em>. DeepSeek + Gemini vs. all-MiniMax-M3, both on the same LangGraph pipeline, same window, five replicates each.</li>
-      <li><strong>Phase 2 — Architecture, model held constant</strong> <em>(pending)</em>. Whichever model wins Phase 1, tested across all four architectures. Each one now runs its own full pipeline independently — nobody reuses another system's analysis, so cost and latency are honestly comparable, not just decision quality.</li>
-    </ol>
-
     <h2>Criteria for choosing</h2>
 
     <h3><span class="roman">I.</span>Price &amp; token economics</h3>
