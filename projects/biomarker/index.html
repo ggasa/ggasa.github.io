@@ -65,7 +65,7 @@
     <p class="source-note">Some patients appear in both responder and non-responder rows across different visit timelines: response was tracked per visit, not fixed per patient.</p>
     <figure class="shot">
       <img src="img/epoching.png" alt="20-second LFP trace divided into overlapping 4-second epochs on a 2-second stride" />
-      <figcaption>A visit's raw LFP trace, split into overlapping 4 s windows on a 2 s stride: the sliding-window scheme that turns 43 visits into 375 epochs.</figcaption>
+      <figcaption>A visit's raw LFP trace, split into overlapping 4 s windows on a 2 s stride: the sliding-window scheme that turns 43 visits into 375 epochs. I have tested different slicing params and have found them to be not so much different, except 2s epoched data with 2s strdie (0% overlap) to be the worst performing with only ~0.1 difference in AUC, due to lost information of the signals on the edge. </figcaption>
     </figure>
 
     <h2>Pipeline</h2>

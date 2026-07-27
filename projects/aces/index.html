@@ -99,6 +99,36 @@
             <marker id="arrowB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"></path>
             </marker>
+            <!-- icons for the four specialists, reused here and in the fan-out diagram below -->
+            <g id="icon-indicator">
+              <line x1="1" y1="20.5" x2="23" y2="20.5" stroke="var(--ink-dim)" stroke-width="1.1"></line>
+              <rect x="3.5" y="13" width="4" height="7.5" fill="var(--accent-ink)"></rect>
+              <rect x="10" y="7" width="4" height="13.5" fill="var(--accent-ink)"></rect>
+              <rect x="16.5" y="3" width="4" height="17.5" fill="var(--accent-ink)"></rect>
+              <line x1="1" y1="9.5" x2="23" y2="9.5" stroke="var(--ink-dim)" stroke-width="1" stroke-dasharray="2.3 2.1"></line>
+            </g>
+            <g id="icon-pattern">
+              <line x1="5.5" y1="2.5" x2="5.5" y2="8" stroke="var(--accent-ink)" stroke-width="1.3"></line>
+              <rect x="3.5" y="8" width="4" height="6.5" fill="none" stroke="var(--accent-ink)" stroke-width="1.3"></rect>
+              <line x1="5.5" y1="14.5" x2="5.5" y2="19.5" stroke="var(--accent-ink)" stroke-width="1.3"></line>
+              <line x1="12" y1="1.5" x2="12" y2="6.5" stroke="var(--accent-ink)" stroke-width="1.3"></line>
+              <rect x="10" y="6.5" width="4" height="9.5" fill="var(--accent-ink)"></rect>
+              <line x1="12" y1="16" x2="12" y2="21" stroke="var(--accent-ink)" stroke-width="1.3"></line>
+              <line x1="18.5" y1="4.5" x2="18.5" y2="9" stroke="var(--accent-ink)" stroke-width="1.3"></line>
+              <rect x="16.5" y="9" width="4" height="5.5" fill="none" stroke="var(--accent-ink)" stroke-width="1.3"></rect>
+              <line x1="18.5" y1="14.5" x2="18.5" y2="18" stroke="var(--accent-ink)" stroke-width="1.3"></line>
+            </g>
+            <g id="icon-trend">
+              <polyline points="1.5,18 6,13.5 9.5,15.5 13.5,8 17.5,10.2 22.5,3.5" fill="none" stroke="var(--accent-ink)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+              <line x1="2" y1="20" x2="21" y2="5" stroke="var(--ink-dim)" stroke-width="1.1" stroke-dasharray="2.3 2.1"></line>
+            </g>
+            <g id="icon-decision">
+              <line x1="2.5" y1="5" x2="11" y2="12" stroke="var(--accent-ink)" stroke-width="1.5" stroke-linecap="round"></line>
+              <line x1="2.5" y1="12" x2="11" y2="12" stroke="var(--accent-ink)" stroke-width="1.5" stroke-linecap="round"></line>
+              <line x1="2.5" y1="19" x2="11" y2="12" stroke="var(--accent-ink)" stroke-width="1.5" stroke-linecap="round"></line>
+              <line x1="11" y1="12" x2="19" y2="12" stroke="var(--accent-ink)" stroke-width="1.7" stroke-linecap="round"></line>
+              <path d="M15.5,7.5 L20.5,12 L15.5,16.5" fill="none" stroke="var(--accent-ink)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+            </g>
           </defs>
           <g font-family="ui-monospace, Consolas, monospace" font-size="11">
             <rect x="110" y="8" width="80" height="26" rx="13" fill="none" stroke="var(--muted)" stroke-width="1.2"></rect>
@@ -106,18 +136,22 @@
             <line x1="150" y1="34" x2="150" y2="52" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowB)"></line>
 
             <rect x="40" y="55" width="220" height="46" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <use href="#icon-indicator" transform="translate(50,69) scale(0.72)"></use>
             <text x="150" y="83" text-anchor="middle" fill="var(--ink)" font-weight="600">Indicator Agent</text>
             <line x1="150" y1="101" x2="150" y2="119" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowB)"></line>
 
             <rect x="40" y="122" width="220" height="46" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <use href="#icon-pattern" transform="translate(50,136) scale(0.72)"></use>
             <text x="150" y="150" text-anchor="middle" fill="var(--ink)" font-weight="600">Pattern Agent</text>
             <line x1="150" y1="168" x2="150" y2="186" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowB)"></line>
 
             <rect x="40" y="189" width="220" height="46" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <use href="#icon-trend" transform="translate(50,203) scale(0.72)"></use>
             <text x="150" y="217" text-anchor="middle" fill="var(--ink)" font-weight="600">Trend Agent</text>
             <line x1="150" y1="235" x2="150" y2="253" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowB)"></line>
 
             <rect x="30" y="256" width="240" height="46" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"></rect>
+            <use href="#icon-decision" transform="translate(40,270) scale(0.72)"></use>
             <text x="150" y="284" text-anchor="middle" fill="var(--ink)" font-weight="600">Decision Maker</text>
             <line x1="150" y1="302" x2="150" y2="320" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowB)"></line>
 
@@ -158,12 +192,15 @@
             <line x1="320" y1="39" x2="530" y2="71" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
 
             <rect x="10" y="73" width="200" height="55" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <use href="#icon-indicator" transform="translate(26,92) scale(0.72)"></use>
             <text x="110" y="105" text-anchor="middle" fill="var(--ink)" font-weight="600">Indicator Agent</text>
 
             <rect x="220" y="73" width="200" height="55" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <use href="#icon-pattern" transform="translate(236,92) scale(0.72)"></use>
             <text x="320" y="105" text-anchor="middle" fill="var(--ink)" font-weight="600">Pattern Agent</text>
 
             <rect x="430" y="73" width="200" height="55" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2"></rect>
+            <use href="#icon-trend" transform="translate(446,92) scale(0.72)"></use>
             <text x="530" y="105" text-anchor="middle" fill="var(--ink)" font-weight="600">Trend Agent</text>
 
             <line x1="110" y1="128" x2="300" y2="166" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
@@ -171,6 +208,7 @@
             <line x1="530" y1="128" x2="340" y2="166" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
 
             <rect x="220" y="169" width="200" height="55" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"></rect>
+            <use href="#icon-decision" transform="translate(236,188) scale(0.72)"></use>
             <text x="320" y="201" text-anchor="middle" fill="var(--ink)" font-weight="600">Decision Maker</text>
 
             <line x1="320" y1="224" x2="320" y2="251" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#arrowA)"></line>
@@ -244,18 +282,21 @@
             <circle cx="5" cy="20" r="1.8" fill="var(--accent-ink)"></circle>
             <circle cx="19" cy="20" r="1.8" fill="var(--accent-ink)"></circle>
           </g>
-          <!-- provider marks: official icons, MIT-licensed from lobehub/lobe-icons
-               (github.com/lobehub/lobe-icons, packages/static-svg/icons) — original
-               viewBox 0 0 24 24, fill="currentColor", recolored to var(--accent-ink)
-               to match this diagram's palette. Copyright (c) 2023 LobeHub. -->
-          <g id="icon-deepseek" fill="var(--accent-ink)" fill-rule="evenodd">
-            <path d="M23.748 4.482c-.254-.124-.364.113-.512.234-.051.039-.094.09-.137.136-.372.397-.806.657-1.373.626-.829-.046-1.537.214-2.163.848-.133-.782-.575-1.248-1.247-1.548-.352-.156-.708-.311-.955-.65-.172-.241-.219-.51-.305-.774-.055-.16-.11-.323-.293-.35-.2-.031-.278.136-.356.276-.313.572-.434 1.202-.422 1.84.027 1.436.633 2.58 1.838 3.393.137.093.172.187.129.323-.082.28-.18.552-.266.833-.055.179-.137.217-.329.14a5.526 5.526 0 01-1.736-1.18c-.857-.828-1.631-1.742-2.597-2.458a11.365 11.365 0 00-.689-.471c-.985-.957.13-1.743.388-1.836.27-.098.093-.432-.779-.428-.872.004-1.67.295-2.687.684a3.055 3.055 0 01-.465.137 9.597 9.597 0 00-2.883-.102c-1.885.21-3.39 1.102-4.497 2.623C.082 8.606-.231 10.684.152 12.85c.403 2.284 1.569 4.175 3.36 5.653 1.858 1.533 3.997 2.284 6.438 2.14 1.482-.085 3.133-.284 4.994-1.86.47.234.962.327 1.78.397.63.059 1.236-.03 1.705-.128.735-.156.684-.837.419-.961-2.155-1.004-1.682-.595-2.113-.926 1.096-1.296 2.746-2.642 3.392-7.003.05-.347.007-.565 0-.845-.004-.17.035-.237.23-.256a4.173 4.173 0 001.545-.475c1.396-.763 1.96-2.015 2.093-3.517.02-.23-.004-.467-.247-.588zM11.581 18c-2.089-1.642-3.102-2.183-3.52-2.16-.392.024-.321.471-.235.763.09.288.207.486.371.739.114.167.192.416-.113.603-.673.416-1.842-.14-1.897-.167-1.361-.802-2.5-1.86-3.301-3.307-.774-1.393-1.224-2.887-1.298-4.482-.02-.386.093-.522.477-.592a4.696 4.696 0 011.529-.039c2.132.312 3.946 1.265 5.468 2.774.868.86 1.525 1.887 2.202 2.891.72 1.066 1.494 2.082 2.48 2.914.348.292.625.514.891.677-.802.09-2.14.11-3.054-.614zm1-6.44a.306.306 0 01.415-.287.302.302 0 01.2.288.306.306 0 01-.31.307.303.303 0 01-.304-.308zm3.11 1.596c-.2.081-.399.151-.59.16a1.245 1.245 0 01-.798-.254c-.274-.23-.47-.358-.552-.758a1.73 1.73 0 01.016-.588c.07-.327-.008-.537-.239-.727-.187-.156-.426-.199-.688-.199a.559.559 0 01-.254-.078c-.11-.054-.2-.19-.114-.358.028-.054.16-.186.192-.21.356-.202.767-.136 1.146.016.352.144.618.408 1.001.782.391.451.462.576.685.914.176.265.336.537.445.848.067.195-.019.354-.25.452z"></path>
+          <!-- provider + framework marks: official icons, MIT-licensed from
+               lobehub/lobe-icons (github.com/lobehub/lobe-icons,
+               packages/static-svg/icons), the *-color.svg variants, used
+               unmodified at their original viewBox 0 0 24 24 so each vendor's
+               own brand colors are preserved. Copyright (c) 2023 LobeHub.
+               AutoGen and DSPy have no icon in that set, so they use plain
+               lettermark badges drawn in this page's own style instead. -->
+          <g id="icon-deepseek">
+            <title>DeepSeek</title><path d="M23.748 4.482c-.254-.124-.364.113-.512.234-.051.039-.094.09-.137.136-.372.397-.806.657-1.373.626-.829-.046-1.537.214-2.163.848-.133-.782-.575-1.248-1.247-1.548-.352-.156-.708-.311-.955-.65-.172-.241-.219-.51-.305-.774-.055-.16-.11-.323-.293-.35-.2-.031-.278.136-.356.276-.313.572-.434 1.202-.422 1.84.027 1.436.633 2.58 1.838 3.393.137.093.172.187.129.323-.082.28-.18.552-.266.833-.055.179-.137.217-.329.14a5.526 5.526 0 01-1.736-1.18c-.857-.828-1.631-1.742-2.597-2.458a11.365 11.365 0 00-.689-.471c-.985-.957.13-1.743.388-1.836.27-.098.093-.432-.779-.428-.872.004-1.67.295-2.687.684a3.055 3.055 0 01-.465.137 9.597 9.597 0 00-2.883-.102c-1.885.21-3.39 1.102-4.497 2.623C.082 8.606-.231 10.684.152 12.85c.403 2.284 1.569 4.175 3.36 5.653 1.858 1.533 3.997 2.284 6.438 2.14 1.482-.085 3.133-.284 4.994-1.86.47.234.962.327 1.78.397.63.059 1.236-.03 1.705-.128.735-.156.684-.837.419-.961-2.155-1.004-1.682-.595-2.113-.926 1.096-1.296 2.746-2.642 3.392-7.003.05-.347.007-.565 0-.845-.004-.17.035-.237.23-.256a4.173 4.173 0 001.545-.475c1.396-.763 1.96-2.015 2.093-3.517.02-.23-.004-.467-.247-.588zM11.581 18c-2.089-1.642-3.102-2.183-3.52-2.16-.392.024-.321.471-.235.763.09.288.207.486.371.739.114.167.192.416-.113.603-.673.416-1.842-.14-1.897-.167-1.361-.802-2.5-1.86-3.301-3.307-.774-1.393-1.224-2.887-1.298-4.482-.02-.386.093-.522.477-.592a4.696 4.696 0 011.529-.039c2.132.312 3.946 1.265 5.468 2.774.868.86 1.525 1.887 2.202 2.891.72 1.066 1.494 2.082 2.48 2.914.348.292.625.514.891.677-.802.09-2.14.11-3.054-.614zm1-6.44a.306.306 0 01.415-.287.302.302 0 01.2.288.306.306 0 01-.31.307.303.303 0 01-.304-.308zm3.11 1.596c-.2.081-.399.151-.59.16a1.245 1.245 0 01-.798-.254c-.274-.23-.47-.358-.552-.758a1.73 1.73 0 01.016-.588c.07-.327-.008-.537-.239-.727-.187-.156-.426-.199-.688-.199a.559.559 0 01-.254-.078c-.11-.054-.2-.19-.114-.358.028-.054.16-.186.192-.21.356-.202.767-.136 1.146.016.352.144.618.408 1.001.782.391.451.462.576.685.914.176.265.336.537.445.848.067.195-.019.354-.25.452z" fill="#4D6BFE"></path>
           </g>
-          <g id="icon-gemini" fill="var(--accent-ink)" fill-rule="evenodd">
-            <path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z"></path>
+          <g id="icon-gemini">
+            <title>Gemini</title><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="#3186FF"></path><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="url(#lobe-icons-gemini-0-_R_0_)"></path><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="url(#lobe-icons-gemini-1-_R_0_)"></path><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="url(#lobe-icons-gemini-2-_R_0_)"></path><defs><linearGradient gradientUnits="userSpaceOnUse" id="lobe-icons-gemini-0-_R_0_" x1="7" x2="11" y1="15.5" y2="12"><stop stop-color="#08B962"></stop><stop offset="1" stop-color="#08B962" stop-opacity="0"></stop></linearGradient><linearGradient gradientUnits="userSpaceOnUse" id="lobe-icons-gemini-1-_R_0_" x1="8" x2="11.5" y1="5.5" y2="11"><stop stop-color="#F94543"></stop><stop offset="1" stop-color="#F94543" stop-opacity="0"></stop></linearGradient><linearGradient gradientUnits="userSpaceOnUse" id="lobe-icons-gemini-2-_R_0_" x1="3.5" x2="17.5" y1="13.5" y2="12"><stop stop-color="#FABC12"></stop><stop offset=".46" stop-color="#FABC12" stop-opacity="0"></stop></linearGradient></defs>
           </g>
-          <g id="icon-minimax" fill="var(--accent-ink)" fill-rule="evenodd">
-            <path d="M16.278 2c1.156 0 2.093.927 2.093 2.07v12.501a.74.74 0 00.744.709.74.74 0 00.743-.709V9.099a2.06 2.06 0 012.071-2.049A2.06 2.06 0 0124 9.1v6.561a.649.649 0 01-.652.645.649.649 0 01-.653-.645V9.1a.762.762 0 00-.766-.758.762.762 0 00-.766.758v7.472a2.037 2.037 0 01-2.048 2.026 2.037 2.037 0 01-2.048-2.026v-12.5a.785.785 0 00-.788-.753.785.785 0 00-.789.752l-.001 15.904A2.037 2.037 0 0113.441 22a2.037 2.037 0 01-2.048-2.026V18.04c0-.356.292-.645.652-.645.36 0 .652.289.652.645v1.934c0 .263.142.506.372.638.23.131.514.131.744 0a.734.734 0 00.372-.638V4.07c0-1.143.937-2.07 2.093-2.07zm-5.674 0c1.156 0 2.093.927 2.093 2.07v11.523a.648.648 0 01-.652.645.648.648 0 01-.652-.645V4.07a.785.785 0 00-.789-.78.785.785 0 00-.789.78v14.013a2.06 2.06 0 01-2.07 2.048 2.06 2.06 0 01-2.071-2.048V9.1a.762.762 0 00-.766-.758.762.762 0 00-.766.758v3.8a2.06 2.06 0 01-2.071 2.049A2.06 2.06 0 010 12.9v-1.378c0-.357.292-.646.652-.646.36 0 .653.29.653.646V12.9c0 .418.343.757.766.757s.766-.339.766-.757V9.099a2.06 2.06 0 012.07-2.048 2.06 2.06 0 012.071 2.048v8.984c0 .419.343.758.767.758.423 0 .766-.339.766-.758V4.07c0-1.143.937-2.07 2.093-2.07z"></path>
+          <g id="icon-minimax">
+            <title>Minimax</title><defs><linearGradient id="lobe-icons-minimax-_R_0_" x1="0%" x2="100.182%" y1="50.057%" y2="50.057%"><stop offset="0%" stop-color="#E2167E"></stop><stop offset="100%" stop-color="#FE603C"></stop></linearGradient></defs><path d="M16.278 2c1.156 0 2.093.927 2.093 2.07v12.501a.74.74 0 00.744.709.74.74 0 00.743-.709V9.099a2.06 2.06 0 012.071-2.049A2.06 2.06 0 0124 9.1v6.561a.649.649 0 01-.652.645.649.649 0 01-.653-.645V9.1a.762.762 0 00-.766-.758.762.762 0 00-.766.758v7.472a2.037 2.037 0 01-2.048 2.026 2.037 2.037 0 01-2.048-2.026v-12.5a.785.785 0 00-.788-.753.785.785 0 00-.789.752l-.001 15.904A2.037 2.037 0 0113.441 22a2.037 2.037 0 01-2.048-2.026V18.04c0-.356.292-.645.652-.645.36 0 .652.289.652.645v1.934c0 .263.142.506.372.638.23.131.514.131.744 0a.734.734 0 00.372-.638V4.07c0-1.143.937-2.07 2.093-2.07zm-5.674 0c1.156 0 2.093.927 2.093 2.07v11.523a.648.648 0 01-.652.645.648.648 0 01-.652-.645V4.07a.785.785 0 00-.789-.78.785.785 0 00-.789.78v14.013a2.06 2.06 0 01-2.07 2.048 2.06 2.06 0 01-2.071-2.048V9.1a.762.762 0 00-.766-.758.762.762 0 00-.766.758v3.8a2.06 2.06 0 01-2.071 2.049A2.06 2.06 0 010 12.9v-1.378c0-.357.292-.646.652-.646.36 0 .653.29.653.646V12.9c0 .418.343.757.766.757s.766-.339.766-.757V9.099a2.06 2.06 0 012.07-2.048 2.06 2.06 0 012.071 2.048v8.984c0 .419.343.758.767.758.423 0 .766-.339.766-.758V4.07c0-1.143.937-2.07 2.093-2.07z" fill="url(#lobe-icons-minimax-_R_0_)" fill-rule="nonzero"></path>
           </g>
         </defs>
         <g font-family="ui-monospace, Consolas, monospace">
@@ -382,6 +423,22 @@
           <marker id="arrowL" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
             <path d="M0,0 L10,5 L0,10 z" fill="var(--rule)"></path>
           </marker>
+        
+          <!-- framework marks: langgraph is the MIT-licensed lobe-icons color
+               variant (see attribution above); AutoGen and DSPy have no icon in
+               that set, so they get lettermark badges in this page's own style. -->
+          <g id="icon-langgraph">
+            <rect x="0" y="0" width="24" height="24" rx="5" fill="#dcede7"></rect>
+            <title>LangGraph</title><path clip-rule="evenodd" d="M6.099 6H17.9C21.264 6 24 8.692 24 12s-2.736 6-6.099 6H6.1C2.736 18 0 15.308 0 12s2.736-6 6.099-6zm5.419 9.3c.148.154.367.146.561.106l.002.001c.09-.072-.038-.163-.16-.25-.074-.052-.145-.102-.166-.147.068-.08-.133-.265-.289-.408a1.52 1.52 0 01-.15-.148c-.11-.119-.155-.268-.2-.418-.03-.1-.06-.2-.11-.292-.304-.694-.653-1.383-1.143-1.97-.315-.39-.674-.74-1.033-1.09a19.384 19.384 0 01-.683-.688c-.226-.229-.362-.511-.499-.794-.114-.236-.228-.473-.396-.68-.507-.735-2.107-.936-2.342.104 0 .032-.01.052-.039.073-.13.094-.245.2-.342.327-.238.326-.274.877.022 1.17l.001-.019c.01-.147.02-.286.139-.391.228.193.576.262.841.117.32.45.422.995.525 1.54.085.456.17.912.382 1.316l.014.022c.124.203.25.41.41.587.059.089.178.184.297.279.157.125.314.25.329.359v.143c-.001.285-.002.58.184.813.103.205-.15.41-.352.385-.112.015-.233-.014-.354-.042-.165-.04-.329-.078-.462-.003-.038.04-.091.04-.145.042-.064.002-.129.004-.167.07-.008.019-.026.04-.045.063-.042.05-.087.105-.033.146l.015-.01c.082-.062.16-.12.27-.084-.014.08.039.102.092.123l.027.012a.344.344 0 01-.008.056c-.009.045-.017.088.018.127a.598.598 0 00.046-.054c.037-.046.073-.092.139-.11.144.19.289.111.471.013.206-.111.459-.248.81-.055-.135-.006-.255.01-.345.12-.023.024-.042.052-.002.084.207-.132.294-.085.375-.04.06.032.115.063.212.024l.07-.036c.155-.083.314-.166.499-.137-.139.039-.188.125-.242.218-.026.047-.054.095-.094.14-.021.021-.03.046-.007.08.29-.023.4-.095.548-.192.07-.046.15-.099.261-.154.124-.075.248-.027.368.02.13.05.255.098.371-.014.037-.033.083-.034.129-.034.016 0 .033 0 .05-.002-.037-.19-.24-.188-.448-.186-.24.003-.483.006-.475-.289.222-.149.224-.407.226-.651 0-.06 0-.117.005-.173.163.09.336.16.508.229.162.065.323.13.474.21.158.25.404.58.732.558.008-.026.016-.047.026-.073.019.004.039.008.059.014.086.02.178.044.223-.056zm6.429-2.829c.19.186.447.29.716.29.269 0 .526-.104.716-.29a.98.98 0 00.297-.7.98.98 0 00-.297-.7 1.024 1.024 0 00-1.08-.224l-.58-.831-.405.272.583.835a.978.978 0 00.05 1.348zm-1.817-2.69a1.03 1.03 0 001.056-.095.991.991 0 00.363-.507.97.97 0 00-.016-.62.994.994 0 00-.39-.488 1.028 1.028 0 00-1.298.14.987.987 0 00-.263.856.98.98 0 00.187.42c.095.125.218.225.36.294zm0 5.752a1.032 1.032 0 001.056-.095.991.991 0 00.363-.507.97.97 0 00-.016-.62.994.994 0 00-.39-.488 1.027 1.027 0 00-1.298.14.986.986 0 00-.263.856.98.98 0 00.187.42c.095.125.218.225.36.294zm.93-3.516v-.492h-1.55a.977.977 0 00-.217-.404l.584-.847-.425-.276-.583.847a1.023 1.023 0 00-1.047.23.973.973 0 00-.296.696c0 .261.107.512.296.696a1.023 1.023 0 001.047.23l.583.847.42-.276-.579-.847a.977.977 0 00.217-.404h1.55z" fill="#1C3C3C" fill-rule="evenodd"></path>
+          </g>
+          <g id="icon-autogen">
+            <rect x="1" y="4.5" width="22" height="15" rx="3.5" fill="none" stroke="var(--accent-ink)" stroke-width="1.6"></rect>
+            <text x="12" y="12" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, Consolas, monospace" font-size="9.5" font-weight="700" fill="var(--accent-ink)">AG</text>
+          </g>
+          <g id="icon-dspy">
+            <rect x="1" y="4.5" width="22" height="15" rx="3.5" fill="none" stroke="var(--accent-ink)" stroke-width="1.6"></rect>
+            <text x="12" y="12" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, Consolas, monospace" font-size="7" font-weight="700" fill="var(--accent-ink)">DSPy</text>
+          </g>
         </defs>
         <g font-family="ui-monospace, Consolas, monospace">
           <rect x="372" y="8" width="200" height="34" rx="3" fill="var(--accent)" stroke="var(--accent)"></rect>
@@ -413,7 +470,8 @@
 
           <g>
             <rect x="8" y="135" width="95" height="60" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"></rect>
-            <text x="55" y="152" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">LangGraph</text>
+            <use href="#icon-langgraph" transform="translate(17,142) scale(0.542)"></use>
+            <text x="63" y="152" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">LangGraph</text>
             <text x="55" y="164" text-anchor="middle" fill="var(--accent-ink)" font-size="8.5">used here</text>
             <circle cx="41" cy="180" r="4" fill="var(--up)"></circle>
             <circle cx="55" cy="180" r="4" fill="var(--up)"></circle>
@@ -421,7 +479,8 @@
           </g>
           <g>
             <rect x="113" y="135" width="95" height="60" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"></rect>
-            <text x="160" y="152" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">AutoGen</text>
+            <use href="#icon-autogen" transform="translate(129,142) scale(0.542)"></use>
+            <text x="168" y="152" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">AutoGen</text>
             <text x="160" y="164" text-anchor="middle" fill="var(--accent-ink)" font-size="8.5">used here</text>
             <circle cx="146" cy="180" r="4" fill="none" stroke="var(--muted)" stroke-width="1.3"></circle>
             <circle cx="160" cy="180" r="4" fill="var(--up)"></circle>
@@ -450,7 +509,8 @@
           </g>
           <g>
             <rect x="533" y="135" width="95" height="60" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"></rect>
-            <text x="580" y="152" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">DSPy</text>
+            <use href="#icon-dspy" transform="translate(559,142) scale(0.542)"></use>
+            <text x="588" y="152" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">DSPy</text>
             <text x="580" y="164" text-anchor="middle" fill="var(--accent-ink)" font-size="8.5">used here</text>
             <circle cx="566" cy="180" r="4" fill="var(--up)"></circle>
             <circle cx="580" cy="180" r="4" fill="var(--up)"></circle>
